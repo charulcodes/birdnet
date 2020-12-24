@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- MAIN SECTION -->
+<main id="main" class="columns is-gapless my-5">
+
+    <!-- SIDEBAR -->
+    <section class="column is-one-quarter ">
+       <div class="card m-4 round-1">
+           <a href="/forum" class="is-flex is-flex-direction-column is-align-items-center mt-4">
+               <img src="/assets/birdnet_logo.png" width="100" height="30">
+               <h2 class="heading-font is-size-3 has-text-black mx-2">BirdNet</h2>
+               <h2 class="spaced-font is-size-5 has-text-black mx-2">FORUM</h2>
+           </a>
+
+           <form class="navbar-item is-flex is-flex-direction-column is-align-items-start mb-2" action="#" method="POST">
+               <label class="label mb-2">Search the forum:</label>
+               <input name="query" class="input input-shadow mb-4" placeholder="Search for a profile or post" type="text"/> 
+               <input class="button is-light mb-2" type="submit" value="Search"/>   
+           </form>
+       </div>
+
+       <div id="popular-posts">
+           <div class="card m-4 p-4 round-1 is-flex is-flex-direction-column">
+               <h2 class="heading-font is-size-4 has-text-centered mb-3">Popular Posts</h2>
+               <a class="has-text-black body-font py-1 is-size-6" href="#">Duis aute irure dolor </a>
+               <a class="has-text-black body-font py-1 is-size-6" href="#">In reprehenderit in  </a>
+               <a class="has-text-black body-font py-1 is-size-6" href="#">Voluptate velit esse </a>
+               <a class="has-text-black body-font py-1 is-size-6" href="#">Cillum dolore eu fugiat  </a>
+               <a class="has-text-black body-font py-1 is-size-6" href="#">Nulla pariatur voluptate </a>
+           </div>
+       </div>
+       
+   </section>
+
+   <!-- RECENT POSTS -->
+   <section class="column m-5 ">    
+       {% if session['username'] %}
+       <h2 class="heading-font is-size-3 my-5 ">Create a new post</h2>
+
+       <form>
+       <div class="card columns p-3 round-1 mb-5">
+
+               <div class="column is-three-quarters">
+                   <input class="input input-shadow mb-2 heading-font" type="text" name="post-title" placeholder="Add post title"/> 
+                   <textarea class="textarea input-shadow heading-font" name="post-content" placeholder="Write something here"></textarea>
+               </div>
+               <div class="column is-one-quarter is-flex is-flex-direction-column is-justify-content-flex-end">
+
+                   <div id="image-upload-preview">
+
+                   </div>
+                   <div id="post-image-upload" class="file mb-3">
+                       <label class="file-label">
+                           <input class="file-input mb-5 body-font" type="file" name="image" accept="image/png, image/jpeg, image/jpg">
+                           <span class="file-cta">
+                               <span class="file-label heading-font"> 
+                                   <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
+                                   Add Images 
+                               </span>
+                           </span>
+                       </label>
+                   </div> 
+                   
+                   <input class="button yellow-bg spaced-font" type="submit" value="POST" >
+               </div>
+       </div>
+       </form>
+       {% endif %}
+
+       <h2 class="heading-font is-size-3 my-5 ">New Posts</h2>
+
+       <div class="card p-3 round-1 mb-5">
+           <div class="media">
+               <div class="media-left">
+                   <figure>
+                       <img class="image is-128x128" src="/images/sample_img_1.png"> 
+                   </figure>
+               </div>
+               <div class="media-content">
+                   <h2 class="heading-font is-size-4 mb-3">Post Title</h2>
+                   <p class="mb-2">At 20:18, 27 January 2021</p>
+                   <p class="">
+                       Lorem ipsum dolor sit amet, consectetur adipiscing
+                   elit, sed do eiusmod tempor incididunt ut labore et
+                   Lorem ipsum dolor sit amet, consectetur adipiscing
+                   elit, sed do eiusmod tempor incididunt ut labore et ....
+                   </p>
+               </div>
+           </div>
+       </div>
+
+       <div class="card p-3 round-1 mb-5">
+           <div class="media">
+               <div class="media-left">
+                   <figure>
+                       <img class="image is-128x128" src="/images/sample_img_2.png"> 
+                   </figure>
+               </div>
+               <div class="media-content">
+                   <h2 class="heading-font is-size-4 mb-3">Post Title</h2>
+                   <p class="mb-2">At 09:15, 5 December 2020 </p>
+                   <p class="">
+                       Lorem ipsum dolor sit amet, consectetur adipiscing
+                   elit, sed do eiusmod tempor incididunt ut labore et
+                   Lorem ipsum dolor sit amet, consectetur adipiscing
+                   elit, sed do eiusmod tempor incididunt ut labore et ....
+                   </p>
+               </div>
+           </div>
+       </div>
+
+       <div class="card p-3 round-1 mb-5">
+           <div class="media">
+               <div class="media-left">
+                   <figure>
+                       <img class="image is-128x128" src="/images/sample_img_3.png"> 
+                   </figure>
+               </div>
+               <div class="media-content">
+                   <h2 class="heading-font is-size-4 mb-3">Post Title</h2>
+                   <p class="mb-2">At 16:48, 18 December 2020 </p>
+                   <p class="">
+                       Lorem ipsum dolor sit amet, consectetur adipiscing
+                   elit, sed do eiusmod tempor incididunt ut labore et
+                   Lorem ipsum dolor sit amet, consectetur adipiscing
+                   elit, sed do eiusmod tempor incididunt ut labore et ....
+                   </p>
+               </div>
+           </div>
+       </div>
+   </section>
+
+</main>
+
+{% endblock %}

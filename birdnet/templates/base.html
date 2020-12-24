@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BirdNet</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="icon" href="/assets/birdnet_logo.png" type="image/png" sizes="16x16">
+    <script>
+        function logoutConfirmation(modalId) {
+            var modal = document.getElementById(modalId);
+            modal.classList.toggle("is-active");
+        }
+    </script>
+</head>
+<body>
+    <div id="container">
+    <!-- NAVBAR -->
+    <nav class="navbar card p-2 bottom-shadow-1" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand mb-2">
+            <a href="/"><img src="/assets/birdnet_logo.png" width="100" height="30"></a>
+            <a class="navbar-item" href="/">
+                <h1 class="heading-font is-size-3"> BirdNet </h1>
+            </a>
+      
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+      
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start mb-2">
+                <a class="navbar-item" href="/forum"> Forum </a>
+                <a class="navbar-item" href="/birdid"> Bird Identification </a>
+                <a class="navbar-item" href="/about"> About </a>
+            </div>
+      
+            <div class="navbar-end">
+                <form class="navbar-item is-flex mb-2" action="/search" method="POST">
+                        <input name="query" class="input input-shadow" placeholder="Search for a bird" type="text"/> 
+                        <input class="button is-light ml-2" type="image" src="/assets/feature_search.png" width="58" height="48"/>   
+                </form>
+                
+                {% if "username" in session %}
+                <div class="is-flex mb-2 is-align-items-center">
+                    <figure class="image is-48x48" width="60" height="60">
+                        <img class="is-rounded ml-2" src={{ "\\profile_photos\\" + session["profile-photo"] }} >
+                    </figure>
+                    <div class="navbar-item">
+                        <a class="button has-background-light has-text-black" href="/profile"> {{ session["username"] }} </a>
+                    </div>
+                    <div class="navbar-item">
+                        <a class="button has-background-info has-text-white" href="javascript:logoutConfirmation('logoutModal');"> Logout </a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="is-flex mb-2">
+                    <img class="image is-rounded ml-2" src="/assets/profile_pic.png" width="60" height="60">
+                    <div class="navbar-item">
+                        <a class="button has-background-info has-text-white" href="/login"> Login </a>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+      </nav>
+
+      {% block content %}{% endblock %}
+
+        <!-- FOOTER -->
+        <footer class="footer footer-shadow body-font">
+            <section class="columns mx-6 my-1">
+                <div class="column is-flex is-flex-direction-column is-align-items-center">
+                    <a class="is-size-5 has-text-white" href="/">Home</a><br>
+                    <a class="is-size-5 has-text-white" href="/forum">Forum</a><br>
+                    <a class="is-size-5 has-text-white" href="/login">Login</a>
+                </div> 
+                <div class="column is-flex is-flex-direction-column is-align-items-center"> 
+                    <a class="is-size-5 has-text-white" href="/about">About</a><br>
+                    <a class="is-size-5 has-text-white" href="/birdid">Bird Identification</a><br>
+                    <a class="is-size-5 has-text-white" href="/search">Search for a bird</a>
+                </div>
+            </section>
+            <br/><br/><br/>
+            <p class="has-text-centered has-text-white">© BirdNet (2020-21)</p>
+        </footer>
+    </div>
+
+    <div id="logoutModal" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title heading-font">Confirm Logout</p>
+          </header>
+          <section class="modal-card-body">
+            <p class="subitle">Are you sure you want to logout? </p>
+          </section>
+          <footer class="modal-card-foot">
+            <a class="button is-success" href="/logout">Yes</a>
+            <a class="button" href="javascript:logoutConfirmation('logoutModal');">Cancel</a>
+          </footer>
+        </div>
+    </div>
+
+    <script src="/js/nav.js"> </script>
+</body>
+</html>

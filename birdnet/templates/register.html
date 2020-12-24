@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BirdNet | Register</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="icon" href="/assets/birdnet_logo.png" type="image/png" sizes="16x16">
+
+    <script>
+        function selectButton(radioButtonId) {
+            var radioButton = document.getElementById(radioButtonId);
+            radioButton.setAttribute("checked", "");
+        }
+    </script>
+
+</head>
+<body>
+    <div id="container">
+        <div class="is-flex is-flex-direction-column is-align-items-center">
+            <br>
+            <a href="/" class="is-flex my-3">
+                <img src="/assets/birdnet_logo.png" width="100" height="30">
+                <h2 class="heading-font is-size-3 has-text-black mx-2">BirdNet</h2>
+            </a>
+
+            {% if registration == "successful" %}
+            <div class="notification is-success">
+                You have successfully registered! You can <a href="/login">Login here</a>
+            </div>
+            {% elif registration == "unsuccessful" %}
+            <div class="notification is-danger">
+                The registration was unsuccessful. Please try again.
+            </div>
+            {% endif %}
+    
+            <div class="register-card">
+            <section class="card p-6 m-4 round-1">
+                <h1 class="heading-font is-size-3 has-text-black mx-2 mb-6 has-text-centered">Register</h1>
+                <form class="my-2" action="/register/" method="POST">
+                    <div class="columns mb-5">
+                        <div class="column px-2">
+                            <label class="label">First Name:</label>
+                            <input class="input input-shadow" type="text" name="firstname" required value={{ request.form["firstname"] }} >
+                            {% if errors %}
+                                {% if errors["firstname"] %}
+                                    <p class="mt-2 has-text-danger"> {{ errors['firstname'] }} </p>
+                                {% endif %}
+                            {% endif %} 
+                        </div>
+                        <div class="column px-2">
+                            <label class="label">Last Name:</label>
+                            <input class="input input-shadow" type="text" name="lastname" required value={{ request.form["lastname"] }} >
+                            {% if errors %}
+                                {% if errors["lastname"] %}
+                                    <p class="mt-2 has-text-danger"> {{ errors['lastname'] }} </p>
+                                {% endif %}
+                            {% endif %}  
+                        </div>  
+                    </div>
+
+                    <div class="is-flex is-align-content-center mb-4">
+                        <label class="label mr-4">Gender:</label>
+                        <label class="radio mr-2 has-text-centered">
+                            <input id="male" type="radio" name="gender" value="m"> &nbsp; Male
+                        </label>
+                        <label class="radio mr-2 has-text-centered">
+                            <input id="female" type="radio" name="gender" value="f"> &nbsp; Female
+                        </label>
+                        <label class="radio mr-2 has-text-centered">
+                            <input id="other" type="radio" name="gender" value="o"> &nbsp; Other
+                        </label>
+                        {% if request.form["gender"] == "m" %}
+                            <script> selectButton("male"); </script>
+                        {% elif request.form["gender"] == "f" %}
+                            <script> selectButton("female"); </script>
+                        {% elif request.form[gender] == "o" %}
+                            <script> selectButton("other"); </script>
+                        {% endif %}
+
+                        {% if errors %}
+                            {% if errors["gender"] %}
+                                <p class="mt-2 n has-text-danger"> {{ errors['gender'] }} </p>
+                            {% endif %}
+                        {% endif %}  
+                    </div>
+
+                    <div class="columns mb-5">
+                        <div class="column px-2">
+                            <label class="label">Email ID:</label>
+                            <input class="input input-shadow" type="email" name="email" required value={{ request.form["email"] }} >
+                            {% if errors %}
+                                {% if errors["email"] %}
+                                    <p class="mt-2 has-text-danger"> {{ errors['email'] }} </p>
+                                {% endif %}
+                            {% endif %}   
+                        </div>
+                        <div class="column px-2">
+                            <label class="label">Username:</label>
+                            <input class="input input-shadow" type="text" name="username" required value={{ request.form["username"] }} >
+                            {% if errors %}
+                                {% if errors["username"] %}
+                                    <p class="mt-2 has-text-danger"> {{ errors['username'] }} </p>
+                                {% endif %}
+                            {% endif %}  
+                        </div>  
+                    </div>
+
+                    <div class="columns mb-5">
+                        <div class="column px-2">
+                            <label class="label">Password:</label>
+                            <input class="input input-shadow" type="password" name="password" required >  
+                            {% if errors %}
+                                {% if errors["password"] == "pwd_error_message" %}
+                                    <p class="mt-2 has-text-danger">
+                                        <b>Password should have:</b> <br>
+                                        <ul class="has-text-danger" style="list-style-type: disc;">
+                                            <li>At least one number</li> 
+                                            <li>At least one uppercase and one lowercase character</li> 
+                                            <li>At least one special symbol</li>  
+                                            <li>Should be at least 8 characters long</li>
+                                        </ul>
+                                    </p>
+                                {% elif errors["password"] %}
+                                    <p class="mt-2 has-text-danger"> {{ errors['password'] }} </p>
+                                {% endif %}
+                            {% endif %}   
+                        </div>
+                        <div class="column px-2">
+                            <label class="label">Re-enter password:</label>
+                            <input class="input input-shadow" type="password" name="password-reconfirm" required>
+                        </div>
+                    </div>
+                    
+                    <div class="is-flex is-justify-content-center" > 
+                        <input class="input button round-1 yellow-bg spaced-font" style="width: 60%;" type="submit" value="REGISTER"> 
+                    </div>
+                </form>
+                <p class="mt-6 has-text-centered">Already have an account? <a href="/login">Login here</a> </p>
+            </section>
+            </div>
+    
+            <br/>
+    
+            <a class="body-font has-text-centered has-text-black mb-6" href="/">Return back to home page</a>
+
+            
+        </div>
+    </div>
+</body>
+</html>

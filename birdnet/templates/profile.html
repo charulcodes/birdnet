@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script>
+    function launchModal(modalId) {
+        var modal = document.getElementById(modalId);
+        modal.classList.toggle("is-active");
+    }
+ 
+    function selectButton(radioButtonId) {
+        var radioButton = document.getElementById(radioButtonId);
+        radioButton.setAttribute("checked", "");
+    }
+</script>
+
+{% if updation == 'successful' %}
+    <p class="notification is-success m-4" width="100%">
+        Profile details updated successfully!
+    </p>
+{% endif %}
+
+<!-- MAIN SECTION -->
+<main class="columns is-gapless my-5">
+    <!-- PROFILE -->
+    <section class="column is-two-fifths">
+        <div class="card m-5 round-1">
+            <div class="is-flex is-justify-content-center">
+                <figure class="image is-128x128 my-3">
+                    <img class="is-rounded" src={{ "\\profile_photos\\" + user.profile_photo_path }}> 
+                </figure>
+            </div>
+            <h1 class="heading-font has-text-centered is-size-2"> {{ user.firstname + " " +  user.lastname }} </h1>
+            <h2 class="heading-font has-text-centered is-size-3 mb-3">@{{ user.username }}</h2>
+
+            <div class="is-flex is-justify-content-center is-align-items-center mb-3">
+                <img class="image is-32x32" src="/assets/profile_joined.png">
+                <p class="is-size-5 ml-3">Joined {{ user.signup_date.strftime("%B %Y") }}</p>
+            </div>
+            <div class="is-flex is-justify-content-center is-align-items-center mb-3">
+                <img class="image is-32x32" src="/assets/profile_edit.png"> 
+                <a class="has-text-black is-size-5 ml-3" href="javascript:launchModal('editModal');">Edit Profile Information</a>
+            </div>
+            <h3 class="heading-font is-size-4 mx-5">About:</h3>
+            <p class="body-font is-size-5 m-5">
+                {% if user.bio == None %}
+                    <i>No bio entered yet</i>
+                {% else %}
+                    {{ user.bio }}
+                {% endif %}
+            </p>
+        </div>
+    </section>
+
+    <!-- RECENT POSTS -->
+    <section class="column m-5 ">
+        <h2 class="heading-font is-size-3 is-half my-5 ">Your recent Posts</h2>
+
+        <div class="card p-3 round-1 mb-5">
+            <div class="media">
+                <div class="media-left">
+                    <figure>
+                        <img class="image is-128x128" src="/images/sample_img_1.png"> 
+                    </figure>
+                </div>
+                <div class="media-content">
+                    <h2 class="heading-font is-size-4 mb-3">Post Title</h2>
+                    <p class="mb-2">At 20:18, 27 January 2021</p>
+                    <p class="">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing
+                    elit, sed do eiusmod tempor incididunt ut labore et
+                    Lorem ipsum dolor sit amet, consectetur adipiscing
+                    elit, sed do eiusmod tempor incididunt ut labore et ....
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-3 round-1 mb-5">
+            <div class="media">
+                <div class="media-left">
+                    <figure>
+                        <img class="image is-128x128" src="/images/sample_img_2.png"> 
+                    </figure>
+                </div>
+                <div class="media-content">
+                    <h2 class="heading-font is-size-4 mb-3">Post Title</h2>
+                    <p class="mb-2">At 09:15, 5 December 2020 </p>
+                    <p class="">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing
+                    elit, sed do eiusmod tempor incididunt ut labore et
+                    Lorem ipsum dolor sit amet, consectetur adipiscing
+                    elit, sed do eiusmod tempor incididunt ut labore et ....
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-3 round-1 mb-5">
+            <div class="media">
+                <div class="media-left">
+                    <figure>
+                        <img class="image is-128x128" src="/images/sample_img_3.png"> 
+                    </figure>
+                </div>
+                <div class="media-content">
+                    <h2 class="heading-font is-size-4 mb-3">Post Title</h2>
+                    <p class="mb-2">At 16:48, 18 December 2020 </p>
+                    <p class="">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing
+                    elit, sed do eiusmod tempor incididunt ut labore et
+                    Lorem ipsum dolor sit amet, consectetur adipiscing
+                    elit, sed do eiusmod tempor incididunt ut labore et ....
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<section id="editModal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card m-2">
+
+        <header class="modal-card-head">
+          <div class="modal-card-title is-flex">
+            <img class="image is-32x32" src="/assets/profile_edit.png"> 
+            <a class="has-text-black is-size-5 ml-3" href="#">Edit Profile Information</a>
+          </div>
+          <button class="delete" aria-label="close" onclick="launchModal('editModal');"></button>
+        </header>
+
+        <section class="modal-card-body">
+            <form class="my-2" action="/profile/" method="POST" enctype="multipart/form-data">
+                <div class="columns mb-5">
+                    <div class="column px-2">
+                        <label class="label">Update First Name:</label>
+                        <input class="input input-shadow" type="text" name="firstname" required value={{ user["firstname"] }} >
+                        {% if errors %}
+                            {% if errors["firstname"] %}
+                                <p class="mt-2 has-text-danger"> {{ errors['firstname'] }} </p>
+                            {% endif %}
+                        {% endif %} 
+                    </div>
+                    <div class="column px-2">
+                        <label class="label">Update Last Name:</label>
+                        <input class="input input-shadow" type="text" name="lastname" required value={{ user["lastname"] }} >
+                        {% if errors %}
+                            {% if errors["lastname"] %}
+                                <p class="mt-2 has-text-danger"> {{ errors['lastname'] }} </p>
+                            {% endif %}
+                        {% endif %}  
+                    </div>  
+                </div>
+
+                <div class="is-flex is-align-content-center mb-4">
+                    <label class="label mr-4">Update gender:</label>
+                    <label class="radio mr-2 has-text-centered">
+                        <input id="male" type="radio" name="gender" value="m"> &nbsp; Male
+                    </label>
+                    <label class="radio mr-2 has-text-centered">
+                        <input id="female" type="radio" name="gender" value="f"> &nbsp; Female
+                    </label>
+                    <label class="radio mr-2 has-text-centered">
+                        <input id="other" type="radio" name="gender" value="o"> &nbsp; Other
+                    </label>
+                    {% if user["gender"] == "m" %}
+                        <script> selectButton("male"); </script>
+                    {% elif user["gender"] == "f" %}
+                        <script> selectButton("female"); </script>
+                    {% elif user[gender] == "o" %}
+                        <script> selectButton("other"); </script>
+                    {% endif %}
+
+                    {% if errors %}
+                        {% if errors["gender"] %}
+                            <p class="mt-2 n has-text-danger"> {{ errors['gender'] }} </p>
+                        {% endif %}
+                    {% endif %}  
+                </div>
+
+                <div>
+                    <label class="label mr-4">Change your profile photo:</label>
+                    <div id="profile-photo-upload" class="file mb-5">
+                        <label class="file-label">
+                            <input class="file-input mb-5 body-font" type="file" name="profile-photo" accept="image/png, image/jpeg, image/jpg">
+                            <span class="file-cta">
+                                <span class="file-label heading-font"> 
+                                    <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
+                                    Upload New Profile Photo 
+                                </span>
+                            </span>
+                            <span class="file-name">
+                                No file chosen
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                
+
+                <div class="mb-5">
+                    <label class="label">Enter your bio:</label>
+                    <textarea class="textarea input-shadow" name="bio" placeholder="Enter something about you">{{ user["bio"] }}</textarea>
+                    {% if errors %}
+                            {% if errors["bio"] %}
+                                <p class="mt-2 has-text-danger"> {{ errors['bio'] }} </p>
+                            {% endif %}
+                    {% endif %}   
+                </div>
+
+                <div class="columns mb-5">
+                    <div class="column px-2">
+                        <label class="label">Update Email ID:</label>
+                        <input class="input input-shadow" type="email" name="email" required value={{ user["email"] }} >
+                        {% if errors %}
+                            {% if errors["email"] %}
+                                <p class="mt-2 has-text-danger"> {{ errors['email'] }} </p>
+                            {% endif %}
+                        {% endif %}   
+                    </div>
+                    <div class="column px-2">
+                        <label class="label">Update username:</label>
+                        <input class="input input-shadow" type="text" name="username" required value={{ user["username"] }} >
+                        {% if errors %}
+                            {% if errors["username"] %}
+                                <p class="mt-2 has-text-danger"> {{ errors['username'] }} </p>
+                            {% endif %}
+                        {% endif %}  
+                    </div>  
+                </div>
+                
+                <div class="is-flex is-justify-content-center" > 
+                    <input class="input button round-1 yellow-bg spaced-font" style="width: 60%;" type="submit" value="UPDATE"> 
+                </div>
+            </form>
+        </section>
+</section>
+
+{% if errors %}
+    <script> launchModal('editModal') </script>
+{% endif %}
+
+<script>
+    const fileInput = document.querySelector('#profile-photo-upload input[type=file]');
+    fileInput.onchange = () => {
+        if (fileInput.files.length > 0) {
+        const fileName = document.querySelector('#profile-photo-upload .file-name');
+            fileName.textContent = fileInput.files[0].name;
+        }
+    }
+</script>
+
+{% endblock %}

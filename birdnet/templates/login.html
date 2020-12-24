@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BirdNet | Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="icon" href="/assets/birdnet_logo.png" type="image/png" sizes="16x16">
+</head>
+<body>
+<div id="container">
+    <div class="is-flex is-flex-direction-column is-align-items-center">
+        <br>
+        <a href="/" class="is-flex my-5">
+            <img src="/assets/birdnet_logo.png" width="100" height="30">
+            <h2 class="heading-font is-size-3 has-text-black mx-2">BirdNet</h2>
+        </a>
+
+        {% if login == "successful" %}
+            <span class="notification is-success">
+                You have successfully logged in!
+            </span>
+        {% elif login == "incorrect_password" %}
+            <span class="notification is-danger">
+                The entered password is incorrect
+            </span>
+        {% elif login == "unsuccessful" %}
+            <span class="notification is-danger">
+                Wrong username and password
+            </span>
+        {% endif %}
+
+        <div class="login-card">
+        <section class="card p-6 m-4">
+            <h1 class="heading-font is-size-3 has-text-black mx-2 mb-6 has-text-centered">Login</h1>
+            <form class="my-2" action="" method="POST">
+                <label class="label">Username:</label>
+                <input class="input input-shadow" type="text" name="username" required/> <br/><br/>
+                <label class="label">Password:</label>
+                <input class="input input-shadow" type="password" name="password" required/>  <br/><br/><br/>
+
+                <input class="input button round-1 yellow-bg spaced-font" type="submit" value="LOGIN">
+            </form>
+            <p class="mt-6 has-text-centered">Don't have an account? <a href="/register">Register here</a> </p>
+        </section>
+        </div>
+
+        <br/>
+
+        <a class="body-font has-text-centered has-text-black mb-6" href="/">Return back to home page</a>
+    </div>
+</div>
+</body>
+</html>

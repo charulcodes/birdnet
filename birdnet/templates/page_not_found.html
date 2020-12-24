@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+    <main class="columns m-5">
+        <figure class="column is-one-quarter p-5">
+            <img class="image" src="/images/sample_img_2.png">
+        </figure>
+        <div class="column p-5">
+            <h1 class="is-size-1 heading-font mb-3">Sorry, this page does not exist &nbsp; :( </h1>
+            <p class="is-size-3 mb-3">You might want to check these pages:</p>
+            <div class="column is-flex is-flex-direction-column">
+                <a class="is-size-5 mb-3" href="/">Home</a>
+                <a class="is-size-5 mb-3" href="/forum">Forum</a>
+                <a class="is-size-5 mb-3" href="/login">Login</a>
+                <a class="is-size-5 mb-3" href="/about">About</a>
+                <a class="is-size-5 mb-3" href="/birdid">Bird Identification</a>
+                <a class="is-size-5 mb-3" href="/search">Search for a bird</a>
+            </div>
+        </div>
+    </main>
+{% endblock %}

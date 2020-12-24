@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="columns is-gapless has-background-grey-lighter	bottom-shadow-2 py-5">
+    <!-- TEXT -->
+    <section class="column  is-one-third">
+        <h1 class="heading-font is-size-1 ml-6">BirdNet</h1>
+        <h1 class="heading-font is-size-3 ml-6">Subtitle</h1>
+        <h1 class="is-size-5 ml-6">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </h1>
+    </section>
+
+    <!-- CAROUSEL -->
+    <section class="column  is-two-third  is-flex  is-flex-direction-row  is-align-items-center"> 
+        <button class="button  has-background-grey-lighter	 heading-font  is-size-5" onclick="changeSlide(-1);">&#10094;</button>
+        <figure class="round-1">
+            <div class="pic">
+                <img src="images/songbird.jpg" class="image slide fade round-1"> 
+                <img src="images/myna.jpg" class="image slide fade round-1"> 
+            </div>
+        </figure>
+        <button class="button  has-background-grey-lighter heading-font is-size-5" onclick="changeSlide(1);">&#10095;</button>
+    </section>
+</section>
+
+  <br/>
+
+  <!-- FEATURES -->
+  <h1 class="heading-font is-size-3 m-3 has-text-centered">Features:</h1>
+  <section class="columns m-3">
+
+      <a class="card column m-4" href="/forum">
+          <div class="card-content">
+              <div class="media">
+                  <div class="media-left">
+                      <img src="assets/feature_forum.png" class="image is-96x96">
+                  </div>
+                  <div class="media-content">
+                    <h3 class="heading-font is-size-4 ml-4">Discuss on the Forum</h3>
+                  </div>
+              </div>
+          </div>
+        </a>
+
+      <a class="card column m-4" href="/birdid">
+        <div class="card-content">
+            <div class="media">
+                <div class="media-left">
+                    <img src="assets/feature_birdid.png" class="image is-96x96">
+                </div>
+                <div class="media-content">
+                  <h3 class="heading-font is-size-4 ml-4">Identify birds using photos</h3>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <a class="card column m-4" href="/search">
+        <div class="card-content">
+            <div class="media">
+                <div class="media-left">
+                    <img src="assets/feature_search.png" class="image is-96x96">
+                </div>
+                <div class="media-content">
+                  <h3 class="heading-font is-size-4 ml-4">Search for bird species</h3>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    </section>
+    
+    <!-- BIRD OF THE DAY -->
+    <br>
+    <h1 class="heading-font is-size-2 mx-5">Bird of the day</h1>
+
+    <section class="columns mx-3 my-1">
+        <figure class="column m-3 is-one-third">
+            <img class="round-1" src="images/myna.jpg">
+        </figure>
+        <div class="column m-3">
+            <h3 class="heading-font is-size-3">Common Myna</h3>
+            <p class="body-font is-size-5">Scientific Name: Acridotheres Tristis</p>
+            <br><br>
+            <p class="body-font">
+                The common myna or Indian myna, sometimes spelled mynah, is a member of the family Sturnidae (starlings and mynas) native to Asia. An omnivorous open woodland bird with a strong territorial instinct, the common myna has adapted extremely well to urban environments. 
+                <br><br>
+                The range of the common myna  is increasing at such a rapid rate that in 2000 the IUCN Species Survival Commission declared it one of the world's most invasive species and one of only three birds listed among "100 of the World's Worst Invasive Species" that pose a threat to biodiversity, agriculture and human interests. 
+            </p>
+        </div>
+    </section>
+    <br/><br/>
+
+    <script src="/js/carousel.js"> </script>
+    
+{% endblock %}
