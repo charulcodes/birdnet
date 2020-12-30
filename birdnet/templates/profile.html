@@ -40,6 +40,10 @@
                 <img class="image is-32x32" src="/assets/profile_edit.png"> 
                 <a class="has-text-black is-size-5 ml-3" href="javascript:launchModal('editModal');">Edit Profile Information</a>
             </div>
+            <div class="is-flex is-flex-direction-column is-justify-content-center is-align-items-center mb-3">
+                <a class="has-text-black is-size-6 ml-3 py-3" href="/password_reset">Change Password</a>
+                <a class="has-text-black is-size-6 ml-3 py-3" href="/delete_account">Delete Account</a>
+            </div>
             <h3 class="heading-font is-size-4 mx-5">About:</h3>
             <p class="body-font is-size-5 m-5">
                 {% if user.bio == None %}

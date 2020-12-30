@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/css/main.css">
     <link rel="icon" href="/assets/birdnet_logo.png" type="image/png" sizes="16x16">
     <script>
-        function logoutConfirmation(modalId) {
+        function launchModal(modalId) {
             var modal = document.getElementById(modalId);
             modal.classList.toggle("is-active");
         }
@@ -53,7 +53,7 @@
                         <a class="button has-background-light has-text-black" href="/profile"> {{ session["username"] }} </a>
                     </div>
                     <div class="navbar-item">
-                        <a class="button has-background-info has-text-white" href="javascript:logoutConfirmation('logoutModal');"> Logout </a>
+                        <a class="button has-background-info has-text-white" href="javascript:launchModal('logoutModal');"> Logout </a>
                     </div>
                 </div>
                 {% else %}

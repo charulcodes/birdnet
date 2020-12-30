@@ -1,9 +1,9 @@
-from flask import render_template, session, request, redirect, url_for
+from flask import render_template, session, request, redirect, url_for, abort
 from datetime import datetime
 
 from birdnet.models import User, db
 from birdnet import app, bcrypt
-from birdnet.validations import validate_new_user, validate_details_for_updation
+from birdnet.validations import validate_new_user, validate_details_for_updation, validate_password
 from birdnet.utils import save_profile_photo
 
 
@@ -63,7 +63,7 @@ def register():
 
 # Login and Register pages 
 @app.route("/login/", methods=['GET', 'POST'])
-def login():
+def login(delete_param = None):
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -72,13 +72,18 @@ def login():
             session['user_id'] = user.user_id
             session['username'] = user.username
             session['profile-photo'] = user.profile_photo_path
-            return redirect(url_for('profile'))
+            if delete_param == True:
+                return redirect(url_for('delete_account'))
+            else:
+                return redirect(url_for('profile'))
         elif user and password != user.password:
             return render_template('login.html', title='Login', login="incorrect_password")
         else:
             return render_template('login.html', title='Login', login="unsuccessful")
     elif request.method == "GET":
-        if "username" in session:
+        if ("username" in session) and delete_param == True:
+            return render_template('login.html', title='Login', delete_param = True) 
+        elif "username" in session:
             return redirect(url_for('profile'))
         return render_template('login.html', title='Login')
 
@@ -129,6 +134,47 @@ def profile():
         else:
             return redirect(url_for('login'))
 
+@app.route("/password_reset/", methods=['GET', 'POST'])
+def password_reset():
+    if request.method == 'POST':
+        username = session['username']
+        current_pwd = request.form["current_pwd"]
+        new_pwd = request.form["new_pwd"]
+        reconfirm_new_pwd = request.form["reconfirm_new_pwd"]
+        user = User.query.filter_by(username = username).first()
+
+        if user and bcrypt.check_password_hash(user.password, current_pwd):
+            if new_pwd == reconfirm_new_pwd:
+                if validate_password(new_pwd, reconfirm_new_pwd):
+                    hashed_password = bcrypt.generate_password_hash(new_pwd).decode('utf-8')
+                    user.password = hashed_password
+                    db.session.add(user)
+                    db.session.commit()
+                    return render_template('password_reset.html', title='Reset Password', status="successful")
+                else:
+                    return render_template('password_reset.html', title='Reset Password', status="pwd_error_message")
+            else:
+                return render_template('password_reset.html', title='Reset Password', status="passwords_dont_match")
+        else:
+            return render_template('password_reset.html', title='Reset Password', status="incorrect_password")
+    elif request.method == 'GET':
+        if "username" in session:
+            return render_template('password_reset.html')
+        else:
+            abort(404)
+
+@app.route("/delete_account/", methods=['GET', 'POST'])
+def delete_account(relogin = None):
+    if request.method == 'POST':
+        if relogin == True:
+            return render_template('delete_account.html', status = "successful")
+    elif request.method == 'GET':
+        if "username" in session:
+            return login(delete_param = True)
+        elif relogin == True:
+            return render_template('delete_account.html') 
+        else:
+            abort(404)
 
 # ------------------------------------ FORUM ------------------------------------
 @app.route("/forum/")

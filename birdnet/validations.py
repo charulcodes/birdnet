@@ -107,3 +107,11 @@ def validate_details_for_updation(current_user, firstname, lastname, gender, ema
             current_user.username = username
 
     return [errors, current_user]
+
+def validate_password(password, reconfirmed_password):
+    pwd_regex = reg = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,50}$"
+
+    if re.search(pwd_regex, password) == None:
+        return False
+    else:
+        return True        
