@@ -1,10 +1,10 @@
 from flask import render_template, session, request, redirect, url_for, abort
 from datetime import datetime
 
-from birdnet.models import User, db
+from birdnet.models import User, Thread, Reply, BirdDetails, db
 from birdnet import app, bcrypt
-from birdnet.validations import validate_new_user, validate_details_for_updation, validate_password
-from birdnet.utils import save_profile_photo
+from birdnet.validations import validate_new_user, validate_details_for_updation, validate_password, validate_new_thread
+from birdnet.utils import save_profile_photo, save_thread_photo
 
 
 # ------------------------------------ HOME & ABOUT PAGES ------------------------------------
@@ -177,14 +177,40 @@ def delete_account(relogin = None):
             abort(404)
 
 # ------------------------------------ FORUM ------------------------------------
-@app.route("/forum/")
+@app.route("/forum/", methods=['GET', 'POST'])
 def forum():
-    return render_template('forum.html', title='Forum')
+    if request.method == 'POST':
+        title = request.form["thread-title"].strip()
+        caption = request.form["thread-caption"].strip()
+        username = session['username']
+        filename = None
+
+        if request.files['thread-image']:
+            filename = save_thread_photo(request.files['thread-image'])
+
+        errors = validate_new_thread(title, caption)
+
+        if errors == {}:
+            thread = Thread(username=username, title=title, caption=caption, image_path=filename, view_count=0)
+            db.session.add(thread)
+            db.session.commit()
+            return render_template('forum.html', title='Forum', status="successful")
+        else:
+            return render_template('forum.html', title='Forum', status="unsuccessful", errors= errors)
+    elif request.method == 'GET':
+        new_threads = Thread.query.all()
+        return render_template('forum.html', title='Forum', new_threads = new_threads)
 
 # Post 
-@app.route("/post/")
-def post():
-    return render_template('post.html')
+@app.route("/forum/thread/<thread_id>", methods=['GET', 'POST'])
+def thread(thread_id):
+    if request.method == 'POST':
+        return render_template('thread.html')
+    elif request.method == 'GET':
+        thread = Thread.query.filter_by(thread_id = thread_id).first()
+        return render_template('thread.html', thread = thread)
+
+    
 
 # Search for a forum post
 @app.route("/forum/search/")

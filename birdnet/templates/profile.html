@@ -11,6 +11,10 @@
         var radioButton = document.getElementById(radioButtonId);
         radioButton.setAttribute("checked", "");
     }
+
+    function toggleDropdown(id) {
+        document.getElementById(id).classList.toggle('is-active');
+    }
 </script>
 
 {% if updation == 'successful' %}
@@ -61,63 +65,54 @@
 
         <div class="card p-3 round-1 mb-5">
             <div class="media">
-                <div class="media-left">
-                    <figure>
-                        <img class="image is-128x128" src="/images/sample_img_1.png"> 
-                    </figure>
+                 <div class="media-left">
+                     <figure class="image is-48x48">
+                         <img class="is-rounded" src="/images/sample_img_3.png"> 
+                     </figure>
+                 </div>
+                 <div class="media-content">
+                     <p class="">At 23:48, 11 December 2020 </p>
+                     <a class="heading-font is-size-4" href="#" >Thread Title</a>
+                 </div>
+                 <div class="media-right">
+                    <div id="dd1" class="dropdown is-right">
+                        <div class="dropdown-trigger">
+                          <button class="button" aria-haspopup="true" onclick="toggleDropdown('dd1');"> \/ </button>
+                        </div>
+                        <div class="dropdown-menu" role="menu">
+                          <div class="dropdown-content">
+                              <a href="#" class="dropdown-item"> Edit </a>
+                              <a href="#" class="dropdown-item"> Delete </a>
+                          </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="media-content">
-                    <h2 class="heading-font is-size-4 mb-3">Post Title</h2>
-                    <p class="mb-2">At 20:18, 27 January 2021</p>
-                    <p class="">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing
-                    elit, sed do eiusmod tempor incididunt ut labore et
-                    Lorem ipsum dolor sit amet, consectetur adipiscing
-                    elit, sed do eiusmod tempor incididunt ut labore et ....
-                    </p>
-                </div>
-            </div>
-        </div>
+             </div>
+ 
+             <div class="media">
+                 <div class="media-left">
+                     <figure>
+                         <img class="image" width="200" src="/images/myna.jpg"> 
+                     </figure>
+                 </div>
+                 <div class="media-content">
+                     <p class="">
+                     Lorem ipsum dolor sit amet, consectetur adipiscing
+                     elit, sed do eiusmod tempor incididunt ut labore et
+                     Lorem ipsum dolor sit amet, consectetur adipiscing
+                     elit, sed do eiusmod tempor incididunt ut labore et ....
+                     </p>    
+                 </div>
+             </div>
+             <footer class="card-footer">
+                 <a href="#" class="card-footer-item">Reply</a>
+                 <a href="#" class="card-footer-item">1.2k views</a>
+             </footer>
+         </div>
 
-        <div class="card p-3 round-1 mb-5">
-            <div class="media">
-                <div class="media-left">
-                    <figure>
-                        <img class="image is-128x128" src="/images/sample_img_2.png"> 
-                    </figure>
-                </div>
-                <div class="media-content">
-                    <h2 class="heading-font is-size-4 mb-3">Post Title</h2>
-                    <p class="mb-2">At 09:15, 5 December 2020 </p>
-                    <p class="">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing
-                    elit, sed do eiusmod tempor incididunt ut labore et
-                    Lorem ipsum dolor sit amet, consectetur adipiscing
-                    elit, sed do eiusmod tempor incididunt ut labore et ....
-                    </p>
-                </div>
-            </div>
-        </div>
+        
 
-        <div class="card p-3 round-1 mb-5">
-            <div class="media">
-                <div class="media-left">
-                    <figure>
-                        <img class="image is-128x128" src="/images/sample_img_3.png"> 
-                    </figure>
-                </div>
-                <div class="media-content">
-                    <h2 class="heading-font is-size-4 mb-3">Post Title</h2>
-                    <p class="mb-2">At 16:48, 18 December 2020 </p>
-                    <p class="">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing
-                    elit, sed do eiusmod tempor incididunt ut labore et
-                    Lorem ipsum dolor sit amet, consectetur adipiscing
-                    elit, sed do eiusmod tempor incididunt ut labore et ....
-                    </p>
-                </div>
-            </div>
-        </div>
+
     </section>
 </main>
 

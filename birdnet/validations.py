@@ -114,4 +114,19 @@ def validate_password(password, reconfirmed_password):
     if re.search(pwd_regex, password) == None:
         return False
     else:
-        return True        
+        return True       
+
+def validate_new_thread(title, caption):
+    errors = {}
+
+    if title == '':
+            errors['title'] = 'Please enter a title for the thread'
+    elif len(title) > 150:
+        errors['title'] = 'Title should not be long than 150 characters'
+
+    if caption == '':
+        errors['caption'] = 'Please enter a caption'
+    elif len(caption) > 400:
+        errors['caption'] = 'Caption should not be long than 400 characters'
+
+    return errors 

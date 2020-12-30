@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 
+<script>
+    function toggleDropdown(id) {
+        document.getElementById(id).classList.toggle('is-active');
+    }
+</script>
+
 <!-- MAIN SECTION -->
 <main id="main" class="columns is-gapless my-5">
 
@@ -36,99 +42,99 @@
    <!-- RECENT POSTS -->
    <section class="column m-5 ">    
        {% if session['username'] %}
-       <h2 class="heading-font is-size-3 my-5 ">Create a new post</h2>
+       <h2 class="heading-font is-size-3 my-5 ">Create a new thread</h2>
 
-       <form>
+       <form action="/forum/" method="POST" enctype="multipart/form-data">
        <div class="card columns p-3 round-1 mb-5">
+            <div class="column is-three-quarters">
+                <input class="input input-shadow mb-2 heading-font" type="text" name="thread-title" placeholder="Add thread title" required/> 
+                {% if errors %}
+                    {% if errors["title"] %}
+                        <p class="mt-1 mb-4 n has-text-danger"> {{ errors['title'] }} </p>
+                    {% endif %}
+                {% endif %}  
+                <textarea class="textarea input-shadow heading-font" name="thread-caption" placeholder="Write something here" required></textarea>
+                {% if errors %}
+                    {% if errors["caption"] %}
+                        <p class="mt-2 mb-4 n has-text-danger"> {{ errors['caption'] }} </p>
+                    {% endif %}
+                {% endif %}  
+            </div>
+            <div class="column is-one-quarter is-flex is-flex-direction-column is-justify-content-flex-end">
 
-               <div class="column is-three-quarters">
-                   <input class="input input-shadow mb-2 heading-font" type="text" name="post-title" placeholder="Add post title"/> 
-                   <textarea class="textarea input-shadow heading-font" name="post-content" placeholder="Write something here"></textarea>
-               </div>
-               <div class="column is-one-quarter is-flex is-flex-direction-column is-justify-content-flex-end">
+                <div id="image-upload-preview"></div>
 
-                   <div id="image-upload-preview">
-
-                   </div>
-                   <div id="post-image-upload" class="file mb-3">
-                       <label class="file-label">
-                           <input class="file-input mb-5 body-font" type="file" name="image" accept="image/png, image/jpeg, image/jpg">
-                           <span class="file-cta">
-                               <span class="file-label heading-font"> 
-                                   <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
-                                   Add Images 
-                               </span>
-                           </span>
-                       </label>
-                   </div> 
-                   
-                   <input class="button yellow-bg spaced-font" type="submit" value="POST" >
-               </div>
+                <div id="post-image-upload" class="file mb-3">
+                    <label class="file-label">
+                        <input class="file-input mb-5 body-font" type="file" name="thread-image" accept="image/png, image/jpeg, image/jpg">
+                        <span class="file-cta">
+                            <span class="file-label heading-font"> 
+                                <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
+                                Add Images 
+                            </span>
+                        </span>
+                    </label>
+                </div> 
+                
+                <input class="button yellow-bg spaced-font" type="submit" value="POST">
+            </div>
        </div>
        </form>
+
        {% endif %}
 
-       <h2 class="heading-font is-size-3 my-5 ">New Posts</h2>
+       <h2 class="heading-font is-size-3 my-5 ">New Discussions</h2>
 
+    {% for thread in new_threads %}
        <div class="card p-3 round-1 mb-5">
            <div class="media">
-               <div class="media-left">
-                   <figure>
-                       <img class="image is-128x128" src="/images/sample_img_1.png"> 
-                   </figure>
-               </div>
-               <div class="media-content">
-                   <h2 class="heading-font is-size-4 mb-3">Post Title</h2>
-                   <p class="mb-2">At 20:18, 27 January 2021</p>
-                   <p class="">
-                       Lorem ipsum dolor sit amet, consectetur adipiscing
-                   elit, sed do eiusmod tempor incididunt ut labore et
-                   Lorem ipsum dolor sit amet, consectetur adipiscing
-                   elit, sed do eiusmod tempor incididunt ut labore et ....
-                   </p>
-               </div>
-           </div>
-       </div>
+               
+                <div class="media-left">
+                    <figure class="image is-48x48">
+                        <img class="is-rounded" src="/assets/profile_pic.png"> 
+                    </figure>
+                </div>
+                <div class="media-content">
+                    <p class=""> 
+                        By <a href="#">{{ thread.username }}</a> 
+                        at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} </p>
+                    <a class="heading-font is-size-4" href= {{ '/forum/thread/{}'.format(thread.thread_id) }} > {{ thread.title }} </a>
+                </div>
+                <div class="media-right">
+                    <div id="dd1" class="dropdown is-right">
+                        <div class="dropdown-trigger">
+                          <button class="button" aria-haspopup="true" onclick="toggleDropdown('dd1');"> \/ </button>
+                        </div>
+                        <div class="dropdown-menu" role="menu">
+                          <div class="dropdown-content">
+                              <a href="#" class="dropdown-item"> Edit </a>
+                              <a href="#" class="dropdown-item"> Delete </a>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-       <div class="card p-3 round-1 mb-5">
-           <div class="media">
-               <div class="media-left">
-                   <figure>
-                       <img class="image is-128x128" src="/images/sample_img_2.png"> 
-                   </figure>
-               </div>
-               <div class="media-content">
-                   <h2 class="heading-font is-size-4 mb-3">Post Title</h2>
-                   <p class="mb-2">At 09:15, 5 December 2020 </p>
-                   <p class="">
-                       Lorem ipsum dolor sit amet, consectetur adipiscing
-                   elit, sed do eiusmod tempor incididunt ut labore et
-                   Lorem ipsum dolor sit amet, consectetur adipiscing
-                   elit, sed do eiusmod tempor incididunt ut labore et ....
-                   </p>
-               </div>
-           </div>
-       </div>
+            <div class="columns">
+                {% if thread.image_path != None %}
+                <div class="column is-one-third">
+                    <figure class="image">
+                        <img class="round-1" src={{ "\\thread\\" + thread.image_path }}> 
+                    </figure>
+                </div>
+                {% endif %}
 
-       <div class="card p-3 round-1 mb-5">
-           <div class="media">
-               <div class="media-left">
-                   <figure>
-                       <img class="image is-128x128" src="/images/sample_img_3.png"> 
-                   </figure>
-               </div>
-               <div class="media-content">
-                   <h2 class="heading-font is-size-4 mb-3">Post Title</h2>
-                   <p class="mb-2">At 16:48, 18 December 2020 </p>
-                   <p class="">
-                       Lorem ipsum dolor sit amet, consectetur adipiscing
-                   elit, sed do eiusmod tempor incididunt ut labore et
-                   Lorem ipsum dolor sit amet, consectetur adipiscing
-                   elit, sed do eiusmod tempor incididunt ut labore et ....
-                   </p>
-               </div>
-           </div>
-       </div>
+                <div class="column">
+                    <p class="">{{ thread.caption }}</p>    
+                </div>
+            </div>
+            <footer class="card-footer">
+                <a href="#" class="card-footer-item">Reply</a>
+                <a href="#" class="card-footer-item"> {{ thread.view_count }} views</a>
+            </footer>
+        </div>
+    {% endfor %}
+
    </section>
 
 </main>

@@ -1,4 +1,43 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div id="container">
+<div class="is-flex m-3 is-flex-direction-column is-align-items-center">  
+
+{% if thread %}
+    <div class="card p-3 round-1 mb-5" style="width: 700px; max-width: 750px;">
+        <div class="media">
+            <div class="media-left">
+                <figure class="image is-48x48" style="max-width: 600px">
+                    <img class="is-rounded" src="/images/sample_img_3.png" > 
+                </figure>
+            </div>
+            <div class="media-content">
+                <p class="mb-2">
+                    By <a href="#">{{ thread.username }}</a> 
+                        at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} </p> 
+                </p>
+                <h2 class="heading-font is-size-4 mb-3">Thread Title</h2>
+            </div>
+        </div>
+        <div id="media">
+            <div class="media-content">
+                {% if thread.image_path != None %}
+                <figure class="mx-6">
+                    <img class="image" src={{ "\\thread\\" + thread.image_path }}> 
+                </figure>
+                {% endif %}
+                <p class="mx-4 my-4"> {{ thread.caption }} </p>
+            </div>
+        </div>
+        <footer class="card-footer">
+            <a href="#" class="card-footer-item">Reply</a>
+            <a href="#" class="card-footer-item"> {{ thread.view_count }} views</a>
+        </footer>
+    </div>
+{% endif %}
+
+</div>
+</div>
+
 {% endblock %}
