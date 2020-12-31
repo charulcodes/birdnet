@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
 
+<script>
+    function toggleDropdown(id) {
+        document.getElementById(id).classList.toggle('is-active');
+    }
+
+    function launchModal(modalId) {
+        var modal = document.getElementById(modalId);
+        modal.classList.toggle("is-active");
+    }
+</script>
+
 <div id="container">
 <div class="is-flex m-3 is-flex-direction-column is-align-items-center">  
 
@@ -9,16 +20,31 @@
         <div class="media">
             <div class="media-left">
                 <figure class="image is-48x48" style="max-width: 600px">
-                    <img class="is-rounded" src="/images/sample_img_3.png" > 
+                    <img class="is-rounded" src="{{ '/profile_photos/' + thread.creator.profile_photo_path }}" > 
                 </figure>
             </div>
             <div class="media-content">
                 <p class="mb-2">
-                    By <a href="#">{{ thread.username }}</a> 
+                    By <a href="{{ '/profile/' + thread.username }}">{{ thread.username }}</a> 
                         at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} </p> 
                 </p>
                 <h2 class="heading-font is-size-4 mb-3">Thread Title</h2>
             </div>
+            {% if thread.username == session['username'] %}
+                 <div class="media-right">
+                    <div id="dd1" class="dropdown is-right">
+                        <div class="dropdown-trigger">
+                          <button class="button" aria-haspopup="true" onclick="toggleDropdown('dd1');"> \/ </button>
+                        </div>
+                        <div class="dropdown-menu" role="menu">
+                          <div class="dropdown-content">
+                              <button onclick = "launchModal('{{ thread.username }}_{{ thread.id }}')" class="dropdown-item"> Edit </button>
+                              <a href="#" class="dropdown-item"> Delete </a>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
         <div id="media">
             <div class="media-content">
@@ -31,11 +57,194 @@
             </div>
         </div>
         <footer class="card-footer">
-            <a href="#" class="card-footer-item">Reply</a>
-            <a href="#" class="card-footer-item"> {{ thread.view_count }} views</a>
+            {% if 'username' in session %}
+            <a href="#reply-block" class="card-footer-item has-text-black">Reply</a>
+            {% endif %}
+            <p class="card-footer-item"> {{ thread.view_count }} views</p>
         </footer>
     </div>
+
+    {% if thread.username == session['username'] %}           <!-- Edit thread modal -->
+    <section id="{{ thread.username }}_{{ thread.id }}" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card m-2">
+    
+            <header class="modal-card-head">
+              <div class="modal-card-title is-flex">
+                <img class="image is-32x32" src="/assets/profile_edit.png"> 
+                <h2 class="has-text-black is-size-5 ml-3">Edit Thread</h2>
+              </div>
+              <button class="delete" aria-label="close" onclick="launchModal('{{ thread.username }}_{{ thread.id }}');"></button>
+            </header>
+    
+            <section class="modal-card-body">
+                <form action="/thread/" method="POST" enctype="multipart/form-data">
+                    <div class="columns round-1">
+                        <div class="column is-three-quarters">
+                            <input class="input input-shadow mb-2 heading-font" type="text" name="thread-title" value="{{ thread.title }}" placeholder="Add thread title" required/> 
+                            {% if errors %}
+                                {% if errors["title"] %}
+                                    <p class="mt-1 mb-4 n has-text-danger"> {{ errors['title'] }} </p>
+                                {% endif %}
+                            {% endif %}  
+                            <textarea class="textarea input-shadow heading-font" name="thread-caption" placeholder="Write something here" required>{{ thread.caption }}</textarea>
+                            {% if errors %}
+                                {% if errors["caption"] %}
+                                    <p class="mt-2 mb-4 n has-text-danger"> {{ errors['caption'] }} </p>
+                                {% endif %}
+                            {% endif %}  
+                        </div>
+                        <div class="column is-one-quarter is-flex is-flex-direction-column is-justify-content-flex-end">
+            
+                            <div id="image-upload-preview"></div>
+            
+                            <div id="post-image-upload" class="file mb-3">
+                                <label class="file-label">
+                                    <input class="file-input mb-5 body-font" type="file" name="thread-image" accept="image/png, image/jpeg, image/jpg">
+                                    <span class="file-cta">
+                                        <span class="file-label heading-font"> 
+                                            <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
+                                            Add Images 
+                                        </span>
+                                    </span>
+                                </label>
+                            </div> 
+                            
+                            <input class="button yellow-bg spaced-font" type="submit" value="POST">
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </section>
+    {% endif %}
+
+    {% if errors %}
+        <script> launchModal('{{ thread.username }}_{{ thread.id }}'); </script>
+    {% endif %} 
+
 {% endif %}
+
+{% if 'username' in session %}
+<div id="reply-block"class="ml-6 mb-6" >
+    <form action="?" method="POST" enctype="multipart/form-data" style="width: 700px; max-width: 750px;">
+        <div class="card columns round-1">
+            <div class="column is-three-quarters">
+                <h2 class="has-text-black is-size-6 mb-4">Reply to this thread</h2>
+                <textarea class="textarea input-shadow heading-font" name="reply-caption" placeholder="Write something here" required></textarea>
+                {% if errors %}
+                    {% if errors["caption"] %}
+                        <p class="mt-2 mb-4 n has-text-danger"> {{ errors['caption'] }} </p>
+                    {% endif %}
+                {% endif %}  
+            </div>
+            <div class="column is-one-quarter is-flex is-flex-direction-column is-justify-content-flex-end">
+
+                <div id="image-upload-preview"></div>
+
+                <div id="post-image-upload" class="file mb-3">
+                    <label class="file-label">
+                        <input class="file-input mb-5 body-font" type="file" name="reply-image" accept="image/png, image/jpeg, image/jpg">
+                        <span class="file-cta">
+                            <span class="file-label heading-font"> 
+                                <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
+                                Add Images 
+                            </span>
+                        </span>
+                    </label>
+                </div> 
+                
+                <input class="button yellow-bg spaced-font" type="submit" value="REPLY">
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}
+
+<!-- REPLIES -->
+
+{% for reply in replies %}
+<div class="card p-3 round-1 mb-5 ml-6" style="width: 700px; max-width: 750px;">
+    <div class="media">
+        <div class="media-left">
+            <figure class="image is-48x48">
+                <img class="is-rounded" src="{{ '/profile_photos/' + reply.parent_thread.creator.profile_photo_path }}"> 
+            </figure>
+        </div>
+        <div class="media-content">
+            <p class="mb-2">
+                By <a href="{{ '/profile/' + reply.username }}">{{ reply.username }}</a> 
+                        at {{ reply.creation_date.strftime('%H:%M, %d %B, %Y') }} </p> 
+            </p>
+            <p class="">{{ reply.caption }}</p>
+        </div>
+        {% if thread.username == session['username'] %}
+                 <div class="media-right">
+                    <div id="dd1" class="dropdown is-right">
+                        <div class="dropdown-trigger">
+                          <button class="button" aria-haspopup="true" onclick="toggleDropdown('dd1');"> \/ </button>
+                        </div>
+                        <div class="dropdown-menu" role="menu">
+                          <div class="dropdown-content">
+                              <button onclick = "launchModal('{{ reply.username }}_{{ reply.thread_id }}_{{ reply.reply_id }}')" class="dropdown-item"> Edit </button>
+                              <a href="#" class="dropdown-item"> Delete </a>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+    </div>
+</div>
+
+<section id="{{ reply.username }}_{{ reply.thread_id }}_{{ reply.reply_id }}" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card m-2">
+
+        <header class="modal-card-head">
+            <div class="modal-card-title is-flex">
+              <img class="image is-32x32" src="/assets/profile_edit.png"> 
+              <h2 class="has-text-black is-size-5 ml-3">Edit Thread</h2>
+            </div>
+            <button class="delete" aria-label="close" onclick="launchModal('{{ thread.username }}_{{ thread.id }}');"></button>
+        </header>
+
+        <section class="modal-card-body">
+            <form action="{{ '/forum/reply/update/' }}{{ reply.reply_id }}" method="POST" enctype="multipart/form-data">
+                <div class="columns round-1">
+                    <div class="column is-three-quarters">
+                        <h2 class="has-text-black is-size-5 ml-3">Edit Reply</h2>
+                        <textarea class="textarea input-shadow heading-font" name="thread-caption" placeholder="Write something here" required>{{ reply.caption }}</textarea>
+                        {% if errors %}
+                            {% if errors["caption"] %}
+                                <p class="mt-2 mb-4 n has-text-danger"> {{ errors['caption'] }} </p>
+                            {% endif %}
+                        {% endif %}  
+                    </div>
+                    <div class="column is-one-quarter is-flex is-flex-direction-column is-justify-content-flex-end">
+        
+                        <div id="image-upload-preview"></div>
+        
+                        <div id="post-image-upload" class="file mb-3">
+                            <label class="file-label">
+                                <input class="file-input mb-5 body-font" type="file" name="thread-image" accept="image/png, image/jpeg, image/jpg">
+                                <span class="file-cta">
+                                    <span class="file-label heading-font"> 
+                                        <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
+                                        Add Images 
+                                    </span>
+                                </span>
+                            </label>
+                        </div> 
+                        
+                        <input class="button yellow-bg spaced-font" type="submit" value="SAVE CHANGES">
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</section>
+{% endfor %}
 
 </div>
 </div>

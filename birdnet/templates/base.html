@@ -50,8 +50,8 @@
                         <img class="is-rounded ml-2" src={{ "\\profile_photos\\" + session["profile-photo"] }} >
                     </figure>
                     <div class="navbar-item">
-                        <a class="button has-background-light has-text-black" href="/profile"> {{ session["username"] }} </a>
-                    </div>
+                        <a class="button has-background-light has-text-black" href="{{ '/profile/' + session['username']}}"> {{ session["username"] }} </a>
+                    </div>  
                     <div class="navbar-item">
                         <a class="button has-background-info has-text-white" href="javascript:launchModal('logoutModal');"> Logout </a>
                     </div>

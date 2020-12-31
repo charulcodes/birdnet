@@ -1,12 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-<script>
-    function toggleDropdown(id) {
-        document.getElementById(id).classList.toggle('is-active');
-    }
-</script>
-
 <!-- MAIN SECTION -->
 <main id="main" class="columns is-gapless my-5">
 
@@ -91,27 +85,14 @@
                
                 <div class="media-left">
                     <figure class="image is-48x48">
-                        <img class="is-rounded" src="/assets/profile_pic.png"> 
+                        <img class="is-rounded" src="{{ '/profile_photos/' + thread.creator.profile_photo_path }}"> 
                     </figure>
                 </div>
                 <div class="media-content">
                     <p class=""> 
-                        By <a href="#">{{ thread.username }}</a> 
+                        By <a href="{{ '/profile/' + thread.username}}">{{ thread.username }}</a> 
                         at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} </p>
-                    <a class="heading-font is-size-4" href= {{ '/forum/thread/{}'.format(thread.thread_id) }} > {{ thread.title }} </a>
-                </div>
-                <div class="media-right">
-                    <div id="dd1" class="dropdown is-right">
-                        <div class="dropdown-trigger">
-                          <button class="button" aria-haspopup="true" onclick="toggleDropdown('dd1');"> \/ </button>
-                        </div>
-                        <div class="dropdown-menu" role="menu">
-                          <div class="dropdown-content">
-                              <a href="#" class="dropdown-item"> Edit </a>
-                              <a href="#" class="dropdown-item"> Delete </a>
-                          </div>
-                        </div>
-                    </div>
+                    <a class="heading-font is-size-4" href= "{{ '/forum/thread/{}'.format(thread.thread_id) }}" > {{ thread.title }} </a>
                 </div>
             </div>
 
@@ -119,7 +100,7 @@
                 {% if thread.image_path != None %}
                 <div class="column is-one-third">
                     <figure class="image">
-                        <img class="round-1" src={{ "\\thread\\" + thread.image_path }}> 
+                        <img class="round-1" src="{{ '\\thread\\' + thread.image_path }}"> 
                     </figure>
                 </div>
                 {% endif %}
@@ -129,7 +110,9 @@
                 </div>
             </div>
             <footer class="card-footer">
+                {% if 'username' in session %}
                 <a href="#" class="card-footer-item">Reply</a>
+                {% endif %}
                 <a href="#" class="card-footer-item"> {{ thread.view_count }} views</a>
             </footer>
         </div>

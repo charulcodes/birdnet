@@ -4,7 +4,7 @@ from datetime import datetime
 from birdnet.models import User, Thread, Reply, BirdDetails, db
 from birdnet import app, bcrypt
 from birdnet.validations import validate_new_user, validate_details_for_updation, validate_password, validate_new_thread
-from birdnet.utils import save_profile_photo, save_thread_photo
+from birdnet.utils import save_profile_photo, save_thread_photo, save_reply_photo
 
 
 # ------------------------------------ HOME & ABOUT PAGES ------------------------------------
@@ -75,7 +75,7 @@ def login(delete_param = None):
             if delete_param == True:
                 return redirect(url_for('delete_account'))
             else:
-                return redirect(url_for('profile'))
+                return redirect(url_for('profile', username_param = username))
         elif user and password != user.password:
             return render_template('login.html', title='Login', login="incorrect_password")
         else:
@@ -96,43 +96,51 @@ def logout():
     return redirect(url_for('login'))
 
 # Profile Page 
-@app.route("/profile/", methods=['GET', 'POST'])
-def profile():
-    if request.method == "POST":
-        session_username = session["username"]
-        current_user = User.query.filter_by(username = session_username).first()
+@app.route("/profile/<username_param>", methods=['GET', 'POST'])
+def profile(username_param):
+    session_username = session.get("username")
+    threads = Thread.query.order_by(Thread.creation_date.desc()).filter_by(username = username_param)
+    user = User.query.filter_by(username = username_param).first()
 
-        firstname = (request.form["firstname"]).strip() 
-        lastname = (request.form["lastname"]).strip() 
-        gender = (request.form["gender"]).strip() 
-        email = (request.form["email"]).strip()
-        bio = request.form["bio"].strip()  
-        username = (request.form["username"]).strip()
-        username = username.lower()
+    if user == None:
+        abort(404)
+    if username_param == session_username:
+        if request.method == "POST":
+            current_user = user
 
-        errors, current_user =  validate_details_for_updation(current_user, firstname, lastname, gender, email, username, bio)
+            firstname = (request.form["firstname"]).strip() 
+            lastname = (request.form["lastname"]).strip() 
+            gender = (request.form["gender"]).strip() 
+            email = (request.form["email"]).strip()
+            bio = request.form["bio"].strip()  
+            username = (request.form["username"]).strip()
+            username = username.lower()
 
-        if request.files['profile-photo']:
-            filename = save_profile_photo(current_user, request.files['profile-photo'])
-            current_user.profile_photo_path = filename
+            errors, current_user =  validate_details_for_updation(current_user, firstname, lastname, gender, email, username, bio)
 
-        if errors == {}:
-            db.session.add(current_user)
-            db.session.commit()
-            session['user_id'] = current_user.user_id
-            session['username'] = current_user.username
-            session['profile-photo'] = current_user.profile_photo_path
-            return render_template('profile.html', title='Profile', user = current_user, updation = "successful")
-        else:
-            return render_template('profile.html', title='Profile', user = current_user, errors = errors)
-                
-    elif request.method == "GET":
-        if "username" in session:
+            if request.files['profile-photo']:
+                filename = save_profile_photo(current_user, request.files['profile-photo'])
+                current_user.profile_photo_path = filename
+
+            if errors == {}:
+                db.session.add(current_user)
+                db.session.commit()
+                session['user_id'] = current_user.user_id
+                session['username'] = current_user.username
+                session['profile-photo'] = current_user.profile_photo_path
+                return render_template('profile.html', title='Profile', user = current_user, updation = "successful", recent_threads = threads)
+            else:
+                return render_template('profile.html', title='Profile', user = current_user, errors = errors, recent_threads = threads)         
+        elif request.method == "GET":
             username = session["username"]
-            current_user = User.query.filter_by(username = username).first()
-            return render_template('profile.html', user = current_user)
-        else:
-            return redirect(url_for('login'))
+            current_user = user
+            return render_template('profile.html', user = current_user, recent_threads = threads)
+    else:
+        if request.method == 'GET':
+            requested_user = user
+            return render_template('profile.html', user= requested_user, recent_threads = threads)
+        elif request.method == 'POST':
+            abort(403)
 
 @app.route("/password_reset/", methods=['GET', 'POST'])
 def password_reset():
@@ -194,26 +202,66 @@ def forum():
             thread = Thread(username=username, title=title, caption=caption, image_path=filename, view_count=0)
             db.session.add(thread)
             db.session.commit()
-            return render_template('forum.html', title='Forum', status="successful")
+            new_threads = Thread.query.order_by(Thread.creation_date.desc()).all()
+            return render_template('forum.html', title='Forum', status="successful", new_threads = new_threads)
         else:
-            return render_template('forum.html', title='Forum', status="unsuccessful", errors= errors)
+            new_threads = Thread.query.all()
+            return render_template('forum.html', title='Forum', status="unsuccessful", errors= errors, new_threads = new_threads)
     elif request.method == 'GET':
-        new_threads = Thread.query.all()
+        new_threads = Thread.query.order_by(Thread.creation_date.desc()).all()
         return render_template('forum.html', title='Forum', new_threads = new_threads)
 
 # Post 
 @app.route("/forum/thread/<thread_id>", methods=['GET', 'POST'])
 def thread(thread_id):
+    thread = Thread.query.get_or_404(thread_id)
+    replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
     if request.method == 'POST':
-        return render_template('thread.html')
-    elif request.method == 'GET':
-        thread = Thread.query.filter_by(thread_id = thread_id).first()
-        return render_template('thread.html', thread = thread)
+        username = session['username']
+        reply_caption = request.form["reply-caption"].strip()
+        filename = None
 
-    
+        if request.files['reply-image']:
+            filename = save_reply_photo(request.files['reply-image'])
+            
+        errors = {}
+        if reply_caption == '':
+            errors['reply_caption'] = 'Please enter text in the reply.'
+        elif len(reply_caption) > 400:
+            errors['reply_caption'] = 'Reply cannot be longer than 400 characters.'
+
+        if errors == {}:
+            new_reply = Reply(username = username, caption = reply_caption, image_path = filename  , thread_id = thread.thread_id)
+            db.session.add(new_reply)
+            db.session.commit()
+            replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
+            return render_template('thread.html', thread = thread, replies = replies)
+        else:
+            return render_template('thread.html', thread = thread, replies = replies, errors = errors)
+    elif request.method == 'GET':
+        return render_template('thread.html', thread = thread, replies = replies)
+
+@app.route("/forum/thread/update/<thread_id>", methods=['POST'])
+def update_thread(thread_id):
+    pass
+
+@app.route("/forum/reply/update/<reply_id>", methods=['POST'])
+def update_reply(reply_id):
+    pass
+
+@app.route("/forum/thread/delete/<thread_id>", methods=['POST'])
+def delete_thread(thread_id):
+    pass
+
+@app.route("/forum/reply/delete/<reply_id>", methods=['POST'])
+def delete_reply(reply_id):
+    pass
+
+@app.route("/forum/threads/", methods=['GET', 'POST'])   
+def all_threads():
+    pass 
 
 # Search for a forum post
 @app.route("/forum/search/")
 def post_search():
     return render_template('post_search.html')
-

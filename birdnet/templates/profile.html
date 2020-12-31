@@ -40,6 +40,7 @@
                 <img class="image is-32x32" src="/assets/profile_joined.png">
                 <p class="is-size-5 ml-3">Joined {{ user.signup_date.strftime("%B %Y") }}</p>
             </div>
+            {% if user.username == session['username'] %}
             <div class="is-flex is-justify-content-center is-align-items-center mb-3">
                 <img class="image is-32x32" src="/assets/profile_edit.png"> 
                 <a class="has-text-black is-size-5 ml-3" href="javascript:launchModal('editModal');">Edit Profile Information</a>
@@ -48,6 +49,7 @@
                 <a class="has-text-black is-size-6 ml-3 py-3" href="/password_reset">Change Password</a>
                 <a class="has-text-black is-size-6 ml-3 py-3" href="/delete_account">Delete Account</a>
             </div>
+            {% endif %}
             <h3 class="heading-font is-size-4 mx-5">About:</h3>
             <p class="body-font is-size-5 m-5">
                 {% if user.bio == None %}
@@ -59,56 +61,48 @@
         </div>
     </section>
 
-    <!-- RECENT POSTS -->
+    <!-- RECENT THREADS -->
     <section class="column m-5 ">
-        <h2 class="heading-font is-size-3 is-half my-5 ">Your recent Posts</h2>
+        {% if user.username == session['username'] %}
+        <h2 class="heading-font is-size-3 is-half my-5 ">Your recent threads</h2>
+        {% else %}
+        <h2 class="heading-font is-size-3 is-half my-5 ">Recent threads</h2>
+        {% endif %}
 
+        {% for thread in recent_threads %}
         <div class="card p-3 round-1 mb-5">
             <div class="media">
                  <div class="media-left">
                      <figure class="image is-48x48">
-                         <img class="is-rounded" src="/images/sample_img_3.png"> 
+                        <img class="is-rounded" src="{{ '/profile_photos/' + thread.creator.profile_photo_path }}"> 
                      </figure>
                  </div>
                  <div class="media-content">
-                     <p class="">At 23:48, 11 December 2020 </p>
-                     <a class="heading-font is-size-4" href="#" >Thread Title</a>
+                    By <a href="{{ '/profile/' + thread.username}}">{{ thread.username }}</a> 
+                    at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} </p>
                  </div>
-                 <div class="media-right">
-                    <div id="dd1" class="dropdown is-right">
-                        <div class="dropdown-trigger">
-                          <button class="button" aria-haspopup="true" onclick="toggleDropdown('dd1');"> \/ </button>
-                        </div>
-                        <div class="dropdown-menu" role="menu">
-                          <div class="dropdown-content">
-                              <a href="#" class="dropdown-item"> Edit </a>
-                              <a href="#" class="dropdown-item"> Delete </a>
-                          </div>
-                        </div>
-                    </div>
-                </div>
              </div>
  
              <div class="media">
+                {% if thread.image_path != None %}
                  <div class="media-left">
                      <figure>
-                         <img class="image" width="200" src="/images/myna.jpg"> 
+                         <img class="image" width="200" src="{{ '\\thread\\' + thread.image_path }}"> 
                      </figure>
                  </div>
+                 {% endif %}
                  <div class="media-content">
-                     <p class="">
-                     Lorem ipsum dolor sit amet, consectetur adipiscing
-                     elit, sed do eiusmod tempor incididunt ut labore et
-                     Lorem ipsum dolor sit amet, consectetur adipiscing
-                     elit, sed do eiusmod tempor incididunt ut labore et ....
-                     </p>    
+                     <p class=""> {{ thread.caption }} </p>    
                  </div>
              </div>
              <footer class="card-footer">
+                {% if 'username' in session %}
                  <a href="#" class="card-footer-item">Reply</a>
+                 {% endif %}
                  <a href="#" class="card-footer-item">1.2k views</a>
              </footer>
          </div>
+         {% endfor %}
 
         
 
@@ -116,6 +110,7 @@
     </section>
 </main>
 
+{% if user.username == session['username'] %}
 <section id="editModal" class="modal">
     <div class="modal-background"></div>
     <div class="modal-card m-2">
@@ -232,7 +227,9 @@
                 </div>
             </form>
         </section>
+    </div>
 </section>
+{% endif %}
 
 {% if errors %}
     <script> launchModal('editModal') </script>
