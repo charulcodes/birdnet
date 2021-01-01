@@ -28,7 +28,7 @@ class Thread(db.Model):
     view_count = db.Column(db.Integer)
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
 
-    replies = db.relationship('Reply', backref="parent_thread", lazy=True)
+    replies = db.relationship('Reply', backref="parent_thread", cascade="all, delete-orphan", lazy=True)
 
     def __repr__():
         return f"Username: ('{self.username}', Title: '{self.title}', Date posted: '{self.post_date}')"

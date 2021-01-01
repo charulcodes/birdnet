@@ -85,8 +85,8 @@
                         </div>
                         <div class="dropdown-menu" role="menu">
                           <div class="dropdown-content">
-                              <button onclick = "launchModal('{{ thread.username }}_{{ thread.id }}')" class="dropdown-item"> Edit </button>
-                              <button onclick = "launchModal('{{ thread.username }}_thread_delete_{{ thread.thread_id }}');" class="dropdown-item"> Delete </button>
+                              <button onclick = "launchModal('{{ thread.username }}_{{ thread.id }}')" class="dropdown-item button is-light is-primary"> Edit </button>
+                              <button onclick = "launchModal('{{ thread.username }}_thread_delete_{{ thread.thread_id }}');" class="dropdown-item button is-light is-danger"> Delete </button>
                           </div>
                         </div>
                     </div>
@@ -146,23 +146,32 @@
     
                     {% if thread.image_path != None %}
                         <figure id="image-upload-preview" class="image m-3">
+                            <p class="is-size-6 mb-2">Current Image:</p>
                             <img class="round-1" src ="{{ '/thread/' + thread.image_path }}">
                         </figure>
                     {% endif %}
+
+                    <label class="checkbox my-2">
+                        <input type="checkbox" name="delete-image">
+                        Delete current image? <p class="has-text-danger">(This action cannot be undone)</p>
+                    </label>
     
-                    <div id="post-image-upload" class="file my-3">
+                    <div id="post-image-upload" class="file mt-3">
                         <label class="file-label">
                             <input class="file-input mb-5 body-font" type="file" name="thread-image" accept="image/png, image/jpeg, image/jpg">
                             <span class="file-cta">
                                 <span class="file-label heading-font"> 
                                     <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
-                                    Add Images 
+                                    Add or Replace Image 
                                 </span>
                             </span>
                         </label>
                     </div> 
+                    <span class="file-name mb-3">
+                        No file chosen
+                    </span>
                     
-                    <input class="button yellow-bg spaced-font" type="submit" value="POST">
+                    <input class="button yellow-bg spaced-font" type="submit" value="SAVE CHANGES">
                 </div>
                 </form>
             </section>
@@ -266,8 +275,8 @@
             </div>
             {% if reply.username == session['username'] %}
                 <div class="media-right is-flex">
-                    <button onclick = "launchModal('{{ reply.username }}_{{ reply.thread_id }}_{{ reply.reply_id }}')" class="button is-light is-small"> Edit </button> &nbsp;
-                    <button onclick = "launchModal('{{ reply.username }}_reply_delete_{{ reply.reply_id }}')" class="button is-light is-small"> Delete </button>
+                    <button onclick = "launchModal('{{ reply.username }}_{{ reply.thread_id }}_{{ reply.reply_id }}')" class="button is-light is-small is-primary"> Edit </button> &nbsp;
+                    <button onclick = "launchModal('{{ reply.username }}_reply_delete_{{ reply.reply_id }}')" class="button is-light is-small is-danger"> Delete </button>
                 </div>
             {% endif %}
         </div>
@@ -313,7 +322,12 @@
                         </figure>
                     {% endif %}
 
-                    <div id="post-image-upload" class="file my-3">
+                    <label class="checkbox my-2">
+                        <input type="checkbox" name="delete-image">
+                        Delete current image? <p class="has-text-danger">(This action cannot be undone)</p>
+                    </label>
+
+                    <div id="post-image-upload" class="file mt-3">
                         <label class="file-label">
                             <input class="file-input mb-5 body-font" type="file" name="reply-image" accept="image/png, image/jpeg, image/jpg">
                             <span class="file-cta">
@@ -323,7 +337,11 @@
                                 </span>
                             </span>
                         </label>
-                    </div> 
+                    </div>
+                    <span class="file-name mb-3">
+                        No file chosen
+                    </span>
+
                     
                     <input class="button yellow-bg spaced-font" type="submit" value="SAVE CHANGES">
                 </div>

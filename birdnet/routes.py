@@ -245,13 +245,15 @@ def thread(thread_id):
             thread_title = request.form["thread-title"].strip()
             thread_caption = request.form["thread-caption"].strip()
             thread_id = int(request.form["thread-id"])
-            filename = None
-
-            if request.files['thread-image']:
-                filename = save_thread_photo(request.files['thread-image'])
+            is_delete_image = request.form.get("delete-image")
                 
             thread = Thread.query.get(reply_id)
             errors, thread = validate_thread_for_updation(thread, thread_title, thread_caption)
+
+            if is_delete_image:
+                thread.image_path = None
+            elif request.files['thread-image']:
+                thread.image_path = save_thread_photo(request.files['thread-image'])
 
             if errors == {}:
                 db.session.add(thread)
@@ -265,13 +267,16 @@ def thread(thread_id):
             username = session['username']
             reply_caption = request.form["reply-caption"].strip()
             reply_id = int(request.form["reply-id"])
+            is_delete_image = request.form.get("delete-image")
             filename = None
-
-            if request.files['reply-image']:
-                filename = save_reply_photo(request.files['reply-image'])
                 
             reply = Reply.query.get(reply_id)
             errors, reply = validate_reply_for_updation(reply, reply_caption)
+
+            if is_delete_image:
+                reply.image_path = None
+            elif request.files['reply-image']:
+                reply.image_path = save_reply_photo(request.files['reply-image'])
 
             if errors == {}:
                 db.session.add(reply)
@@ -282,9 +287,29 @@ def thread(thread_id):
                 errors['reply-id'] = reply_id
                 return render_template('thread.html', thread = thread, replies = replies, errors = errors, status = 'reply-updation-failed')
         elif request.form['form-type'] == 'delete-thread':
-            pass
+            username = session['username']
+            thread_id = int(request.form["thread-id"])
+            thread = Thread.query.get(thread_id)
+
+            if thread.username == username:
+                db.session.delete(thread)
+                db.session.commit()
+                return render_template('thread.html', thread = thread, replies = replies, status = 'thread-deletion-successful')
+            else:
+                return render_template('thread.html', thread = thread, replies = replies, status = 'thread-deletion-failed')
         elif request.form['form-type'] == 'delete-reply':
-            pass
+            username = session['username']
+            reply_id = int(request.form["reply-id"])
+
+            reply = Reply.query.get(reply_id)
+
+            if reply.username == username:
+                db.session.delete(reply)
+                db.session.commit()
+                replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
+                return render_template('thread.html', thread = thread, replies = replies, status = 'reply-deletion-successful')
+            else:
+                return render_template('thread.html', thread = thread, replies = replies, status = 'reply-deletion-failed')
     elif request.method == 'GET':
         return render_template('thread.html', thread = thread, replies = replies)
 
