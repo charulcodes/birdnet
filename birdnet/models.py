@@ -14,6 +14,7 @@ class User(db.Model):
     signup_date = db.Column(db.DateTime, default=datetime.utcnow)
 
     threads = db.relationship('Thread', backref="creator", lazy=True)
+    replies = db.relationship('Reply', backref="creator", lazy=True)
 
     def __repr__():
         return f"User('{self.username}','{self.email}','{self.signup_date}')"

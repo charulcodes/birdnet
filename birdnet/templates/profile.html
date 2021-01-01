@@ -78,8 +78,13 @@
                      </figure>
                  </div>
                  <div class="media-content">
-                    By <a href="{{ '/profile/' + thread.username}}">{{ thread.username }}</a> 
-                    at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} </p>
+                     <p>
+                        By <a href="{{ '/profile/' + thread.username}}">{{ thread.username }}</a> 
+                        at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} 
+                    </p>
+                    <a href= "{{ '/forum/thread/{}'.format(thread.thread_id) }}" class="heading-font is-size-4 mb-3 has-text-black">
+                        {{ thread.title }}
+                    </a>
                  </div>
              </div>
  
@@ -124,7 +129,7 @@
         </header>
 
         <section class="modal-card-body">
-            <form class="my-2" action="/profile/" method="POST" enctype="multipart/form-data">
+            <form class="my-2" action="?" method="POST" enctype="multipart/form-data">
                 <div class="columns mb-5">
                     <div class="column px-2">
                         <label class="label">Update First Name:</label>

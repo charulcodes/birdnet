@@ -3,7 +3,7 @@ from datetime import datetime
 
 from birdnet.models import User, Thread, Reply, BirdDetails, db
 from birdnet import app, bcrypt
-from birdnet.validations import validate_new_user, validate_details_for_updation, validate_password, validate_new_thread
+from birdnet.validations import validate_new_user, validate_details_for_updation, validate_password, validate_new_thread, validate_thread_for_updation, validate_reply_for_updation
 from birdnet.utils import save_profile_photo, save_thread_photo, save_reply_photo
 
 
@@ -84,7 +84,7 @@ def login(delete_param = None):
         if ("username" in session) and delete_param == True:
             return render_template('login.html', title='Login', delete_param = True) 
         elif "username" in session:
-            return redirect(url_for('profile'))
+            return redirect(url_for('profile', username_param = session['username']))
         return render_template('login.html', title='Login')
 
 # Logout Page 
@@ -217,45 +217,76 @@ def thread(thread_id):
     thread = Thread.query.get_or_404(thread_id)
     replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
     if request.method == 'POST':
-        username = session['username']
-        reply_caption = request.form["reply-caption"].strip()
-        filename = None
+        if request.form['form-type'] == 'create-reply':
+            username = session['username']
+            reply_caption = request.form["reply-caption"].strip()
+            filename = None
 
-        if request.files['reply-image']:
-            filename = save_reply_photo(request.files['reply-image'])
-            
-        errors = {}
-        if reply_caption == '':
-            errors['reply_caption'] = 'Please enter text in the reply.'
-        elif len(reply_caption) > 400:
-            errors['reply_caption'] = 'Reply cannot be longer than 400 characters.'
+            if request.files['reply-image']:
+                filename = save_reply_photo(request.files['reply-image'])
+                
+            errors = {}
+            if reply_caption == '':
+                errors['reply_caption'] = 'Please enter text in the reply.'
+            elif len(reply_caption) > 400:
+                errors['reply_caption'] = 'Reply cannot be longer than 400 characters.'
 
-        if errors == {}:
-            new_reply = Reply(username = username, caption = reply_caption, image_path = filename  , thread_id = thread.thread_id)
-            db.session.add(new_reply)
-            db.session.commit()
-            replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
-            return render_template('thread.html', thread = thread, replies = replies)
-        else:
-            return render_template('thread.html', thread = thread, replies = replies, errors = errors)
+            if errors == {}:
+                new_reply = Reply(username = username, caption = reply_caption, image_path = filename, thread_id = thread.thread_id)
+                db.session.add(new_reply)
+                db.session.commit()
+                replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
+                return render_template('thread.html', thread = thread, replies = replies, status = 'reply-creation-successful')
+            else:
+                errors['reply-creation'] = True
+                return render_template('thread.html', thread = thread, replies = replies, errors = errors, status = 'reply-creation-failed')
+        elif request.form['form-type'] == 'edit-thread':
+            username = session['username']
+            thread_title = request.form["thread-title"].strip()
+            thread_caption = request.form["thread-caption"].strip()
+            thread_id = int(request.form["thread-id"])
+            filename = None
+
+            if request.files['thread-image']:
+                filename = save_thread_photo(request.files['thread-image'])
+                
+            thread = Thread.query.get(reply_id)
+            errors, thread = validate_thread_for_updation(thread, thread_title, thread_caption)
+
+            if errors == {}:
+                db.session.add(thread)
+                db.session.commit()
+                replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
+                return render_template('thread.html', thread = thread, replies = replies, status = 'thread-updation-successful')
+            else:
+                errors['thread-id'] = thread_id
+                return render_template('thread.html', thread = thread, replies = replies, errors = errors, status = 'thread-updation-failed')
+        elif request.form['form-type'] == 'edit-reply':
+            username = session['username']
+            reply_caption = request.form["reply-caption"].strip()
+            reply_id = int(request.form["reply-id"])
+            filename = None
+
+            if request.files['reply-image']:
+                filename = save_reply_photo(request.files['reply-image'])
+                
+            reply = Reply.query.get(reply_id)
+            errors, reply = validate_reply_for_updation(reply, reply_caption)
+
+            if errors == {}:
+                db.session.add(reply)
+                db.session.commit()
+                replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
+                return render_template('thread.html', thread = thread, replies = replies, status = 'reply-updation-successful')
+            else:
+                errors['reply-id'] = reply_id
+                return render_template('thread.html', thread = thread, replies = replies, errors = errors, status = 'reply-updation-failed')
+        elif request.form['form-type'] == 'delete-thread':
+            pass
+        elif request.form['form-type'] == 'delete-reply':
+            pass
     elif request.method == 'GET':
         return render_template('thread.html', thread = thread, replies = replies)
-
-@app.route("/forum/thread/update/<thread_id>", methods=['POST'])
-def update_thread(thread_id):
-    pass
-
-@app.route("/forum/reply/update/<reply_id>", methods=['POST'])
-def update_reply(reply_id):
-    pass
-
-@app.route("/forum/thread/delete/<thread_id>", methods=['POST'])
-def delete_thread(thread_id):
-    pass
-
-@app.route("/forum/reply/delete/<reply_id>", methods=['POST'])
-def delete_reply(reply_id):
-    pass
 
 @app.route("/forum/threads/", methods=['GET', 'POST'])   
 def all_threads():

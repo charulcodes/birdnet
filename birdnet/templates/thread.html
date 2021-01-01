@@ -12,11 +12,56 @@
     }
 </script>
 
-<div id="container">
-<div class="is-flex m-3 is-flex-direction-column is-align-items-center">  
+<div class="columns is-flex is-flex-direction-column is-align-items-center">
+<div class="column is-two-thirds m-3">  
+
+<div id="error-div" class="is-flex m-3 p-2 is-align-items-center is-justify-content-center">
+    {% if status == "reply-creation-successful" %}
+        <span class="notification is-success">
+            Reply posted
+        </span>
+    {% elif status == "reply-creation-failed" %}
+        <span class="notification is-danger">
+            Reply couldn't be posted. Please try again.
+        </span>
+    {% elif status == "thread-updation-successful" %}
+        <span class="notification is-success">
+            Thread edited successfully.
+        </span>
+    {% elif status == "thread-updation-failed" %}
+        <span class="notification is-danger">
+            Thread couldn't be edited. Please try again.
+        </span>
+    {% elif status == "reply-updation-successful" %}
+        <span class="notification is-success">
+            Reply edited successfully.
+        </span>
+    {% elif status == "reply-updation-failed" %}
+        <span class="notification is-danger">
+            Reply couldn't be edited. Please try again.
+        </span>
+        {% elif status == "thread-deletion-successful" %}
+        <span class="notification is-success">
+            Thread deleted successfully.
+        </span>
+    {% elif status == "thread-deletion-failed" %}
+        <span class="notification is-danger">
+            Thread couldn't be deleted. Please try again.
+        </span>
+    {% elif status == "reply-deletion-successful" %}
+        <span class="notification is-success">
+            Reply deleted successfully.
+        </span>
+    {% elif status == "reply-deletion-failed" %}
+        <span class="notification is-danger">
+            Reply couldn't be deleted. Please try again.
+        </span>
+    {% endif %}
+</div>
 
 {% if thread %}
-    <div class="card p-3 round-1 mb-5" style="width: 700px; max-width: 750px;">
+    <!-- THREAD -->
+    <div class="card p-3 round-1 mb-5">
         <div class="media">
             <div class="media-left">
                 <figure class="image is-48x48" style="max-width: 600px">
@@ -28,18 +73,20 @@
                     By <a href="{{ '/profile/' + thread.username }}">{{ thread.username }}</a> 
                         at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} </p> 
                 </p>
-                <h2 class="heading-font is-size-4 mb-3">Thread Title</h2>
+                <h2 class="heading-font is-size-4 mb-3">{{ thread.title }}</h2>
             </div>
             {% if thread.username == session['username'] %}
                  <div class="media-right">
                     <div id="dd1" class="dropdown is-right">
                         <div class="dropdown-trigger">
-                          <button class="button" aria-haspopup="true" onclick="toggleDropdown('dd1');"> \/ </button>
+                          <button class="button" aria-haspopup="true" onclick="toggleDropdown('dd1');"> 
+                            <img class="image is-24x24" src="/assets/forum_dropdown_arrow.png" >
+                         </button>
                         </div>
                         <div class="dropdown-menu" role="menu">
                           <div class="dropdown-content">
                               <button onclick = "launchModal('{{ thread.username }}_{{ thread.id }}')" class="dropdown-item"> Edit </button>
-                              <a href="#" class="dropdown-item"> Delete </a>
+                              <button onclick = "launchModal('{{ thread.username }}_thread_delete_{{ thread.thread_id }}');" class="dropdown-item"> Delete </button>
                           </div>
                         </div>
                     </div>
@@ -50,7 +97,7 @@
             <div class="media-content">
                 {% if thread.image_path != None %}
                 <figure class="mx-6">
-                    <img class="image" src={{ "\\thread\\" + thread.image_path }}> 
+                    <img class="image" src="{{ '\\thread\\' + thread.image_path }}"> 
                 </figure>
                 {% endif %}
                 <p class="mx-4 my-4"> {{ thread.caption }} </p>
@@ -64,7 +111,8 @@
         </footer>
     </div>
 
-    {% if thread.username == session['username'] %}           <!-- Edit thread modal -->
+     <!-- EDIT THREAD MODAL -->
+    {% if thread.username == session['username'] %}          
     <section id="{{ thread.username }}_{{ thread.id }}" class="modal">
         <div class="modal-background"></div>
         <div class="modal-card m-2">
@@ -78,63 +126,102 @@
             </header>
     
             <section class="modal-card-body">
-                <form action="/thread/" method="POST" enctype="multipart/form-data">
-                    <div class="columns round-1">
-                        <div class="column is-three-quarters">
-                            <input class="input input-shadow mb-2 heading-font" type="text" name="thread-title" value="{{ thread.title }}" placeholder="Add thread title" required/> 
-                            {% if errors %}
-                                {% if errors["title"] %}
-                                    <p class="mt-1 mb-4 n has-text-danger"> {{ errors['title'] }} </p>
-                                {% endif %}
-                            {% endif %}  
-                            <textarea class="textarea input-shadow heading-font" name="thread-caption" placeholder="Write something here" required>{{ thread.caption }}</textarea>
-                            {% if errors %}
-                                {% if errors["caption"] %}
-                                    <p class="mt-2 mb-4 n has-text-danger"> {{ errors['caption'] }} </p>
-                                {% endif %}
-                            {% endif %}  
-                        </div>
-                        <div class="column is-one-quarter is-flex is-flex-direction-column is-justify-content-flex-end">
-            
-                            <div id="image-upload-preview"></div>
-            
-                            <div id="post-image-upload" class="file mb-3">
-                                <label class="file-label">
-                                    <input class="file-input mb-5 body-font" type="file" name="thread-image" accept="image/png, image/jpeg, image/jpg">
-                                    <span class="file-cta">
-                                        <span class="file-label heading-font"> 
-                                            <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
-                                            Add Images 
-                                        </span>
-                                    </span>
-                                </label>
-                            </div> 
-                            
-                            <input class="button yellow-bg spaced-font" type="submit" value="POST">
-                        </div>
-                    </div>
+                <form action="?" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="form-type" value="edit-thread">
+                <input type="hidden" name="thread-id" value="{{ thread.thread_id }}">
+
+                <div class="is-flex is-flex-direction-column">
+                    <input class="input input-shadow mb-2 heading-font" type="text" name="thread-title" value="{{ thread.title }}" placeholder="Add thread title" required/> 
+                    {% if errors %}
+                        {% if errors["new-title"] and errors[thread-id] == thread.thread_id %}
+                            <p class="mt-1 mb-4 n has-text-danger"> {{ errors['new-title'] }} </p>
+                        {% endif %}
+                    {% endif %}  
+                    <textarea class="textarea input-shadow heading-font" name="thread-caption" placeholder="Write something here" required>{{ thread.caption }}</textarea>
+                    {% if errors %}
+                        {% if errors["new-caption"] and errors[thread-id] == thread.thread_id %}
+                            <p class="mt-2 mb-4 n has-text-danger"> {{ errors['new-caption'] }} </p>
+                        {% endif %}
+                    {% endif %}  
+    
+                    {% if thread.image_path != None %}
+                        <figure id="image-upload-preview" class="image m-3">
+                            <img class="round-1" src ="{{ '/thread/' + thread.image_path }}">
+                        </figure>
+                    {% endif %}
+    
+                    <div id="post-image-upload" class="file my-3">
+                        <label class="file-label">
+                            <input class="file-input mb-5 body-font" type="file" name="thread-image" accept="image/png, image/jpeg, image/jpg">
+                            <span class="file-cta">
+                                <span class="file-label heading-font"> 
+                                    <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
+                                    Add Images 
+                                </span>
+                            </span>
+                        </label>
+                    </div> 
+                    
+                    <input class="button yellow-bg spaced-font" type="submit" value="POST">
+                </div>
                 </form>
             </section>
+        </div>
+    </section>
+    
+    <!-- DELETE REPLY MODAL -->
+    <section id="{{ thread.username }}_thread_delete_{{ thread.thread_id }}" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card m-2">
+
+            <header class="modal-card-head">
+                <div class="modal-card-title is-flex">
+                <img class="image is-32x32" src="/assets/profile_delete.png"> 
+                <h2 class="has-text-black is-size-5 ml-3">Delete Thread?</h2>
+                </div>
+                <button class="delete" aria-label="close" onclick="launchModal('{{ thread.username }}_thread_delete_{{ thread.thread_id }}');"></button>
+            </header>
+
+            <form action="?" method="POST" enctype="multipart/form-data">
+            <section class="modal-card-body">
+                <p class="m-2 is-size-6">This action cannot be undone.</p>
+                <input type="hidden" name="form-type" value="delete-thread">
+                <input type="hidden" name="thread-id" value="{{ thread.thread_id }}">
+            </section>
+            <footer class="modal-card-foot">
+                <input class="button is-danger spaced-font" type="submit" value="DELETE">
+                <button class="button spaced-font" onclick="launchModal('{{ thread.username }}_thread_delete_{{ thread.thread_id }}');">
+                    CANCEL
+                </button>
+            </footer>
+            </form>
         </div>
     </section>
     {% endif %}
 
     {% if errors %}
-        <script> launchModal('{{ thread.username }}_{{ thread.id }}'); </script>
+        {% if errors['thread-id'] == thread.thread_id %}
+            <script> launchModal('{{ thread.username }}_{{ thread.id }}'); </script>
+        {% endif %} 
     {% endif %} 
 
 {% endif %}
 
+
+<!-- REPLY BOX -->
 {% if 'username' in session %}
-<div id="reply-block"class="ml-6 mb-6" >
-    <form action="?" method="POST" enctype="multipart/form-data" style="width: 700px; max-width: 750px;">
+<div id="reply-block"class="mx-3 my-5" >
+    <form action="?" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="form-type" value="create-reply">
         <div class="card columns round-1">
             <div class="column is-three-quarters">
-                <h2 class="has-text-black is-size-6 mb-4">Reply to this thread</h2>
+                <h2 class="has-text-black is-size-6 ml-1 mb-4">Reply to this thread</h2>
                 <textarea class="textarea input-shadow heading-font" name="reply-caption" placeholder="Write something here" required></textarea>
                 {% if errors %}
-                    {% if errors["caption"] %}
-                        <p class="mt-2 mb-4 n has-text-danger"> {{ errors['caption'] }} </p>
+                    {% if errors['reply-creation'] == True %}
+                        {% if errors["reply-caption"] %}
+                            <p class="mt-2 mb-4 n has-text-danger"> {{ errors['caption'] }} </p>
+                        {% endif %}
                     {% endif %}
                 {% endif %}  
             </div>
@@ -164,89 +251,126 @@
 <!-- REPLIES -->
 
 {% for reply in replies %}
-<div class="card p-3 round-1 mb-5 ml-6" style="width: 700px; max-width: 750px;">
-    <div class="media">
-        <div class="media-left">
-            <figure class="image is-48x48">
-                <img class="is-rounded" src="{{ '/profile_photos/' + reply.parent_thread.creator.profile_photo_path }}"> 
-            </figure>
-        </div>
-        <div class="media-content">
-            <p class="mb-2">
-                By <a href="{{ '/profile/' + reply.username }}">{{ reply.username }}</a> 
-                        at {{ reply.creation_date.strftime('%H:%M, %d %B, %Y') }} </p> 
-            </p>
-            <p class="">{{ reply.caption }}</p>
-        </div>
-        {% if thread.username == session['username'] %}
-                 <div class="media-right">
-                    <div id="dd1" class="dropdown is-right">
-                        <div class="dropdown-trigger">
-                          <button class="button" aria-haspopup="true" onclick="toggleDropdown('dd1');"> \/ </button>
-                        </div>
-                        <div class="dropdown-menu" role="menu">
-                          <div class="dropdown-content">
-                              <button onclick = "launchModal('{{ reply.username }}_{{ reply.thread_id }}_{{ reply.reply_id }}')" class="dropdown-item"> Edit </button>
-                              <a href="#" class="dropdown-item"> Delete </a>
-                          </div>
-                        </div>
-                    </div>
+    <div class="card p-2 round-1 m-3">
+        <div class="media">
+            <div class="media-left">
+                <figure class="image is-48x48">
+                    <img class="is-rounded" src="{{ '/profile_photos/' + reply.creator.profile_photo_path }}"> 
+                </figure>
+            </div>
+            <div class="media-content">
+                <p class="mb-2">
+                    By <a href="{{ '/profile/' + reply.username }}">{{ reply.username }}</a> 
+                            at {{ reply.creation_date.strftime('%H:%M, %d %B, %Y') }} 
+                </p>
+            </div>
+            {% if reply.username == session['username'] %}
+                <div class="media-right is-flex">
+                    <button onclick = "launchModal('{{ reply.username }}_{{ reply.thread_id }}_{{ reply.reply_id }}')" class="button is-light is-small"> Edit </button> &nbsp;
+                    <button onclick = "launchModal('{{ reply.username }}_reply_delete_{{ reply.reply_id }}')" class="button is-light is-small"> Delete </button>
                 </div>
             {% endif %}
+        </div>
+        <div class="pl-6">
+            {% if reply.image_path != None %}
+                <figure class="mx-6">
+                    <img class="image" src="{{ '\\reply\\' + reply.image_path }}"> 
+                </figure>
+            {% endif %}
+            <p class="">{{ reply.caption }}</p>
+        </div>
     </div>
-</div>
 
-<section id="{{ reply.username }}_{{ reply.thread_id }}_{{ reply.reply_id }}" class="modal">
-    <div class="modal-background"></div>
-    <div class="modal-card m-2">
+    {% if reply.username == session['username'] %}
+    <!-- EDIT REPLY MODAL -->
+    <section id="{{ reply.username }}_{{ reply.thread_id }}_{{ reply.reply_id }}" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card m-2">
 
-        <header class="modal-card-head">
-            <div class="modal-card-title is-flex">
-              <img class="image is-32x32" src="/assets/profile_edit.png"> 
-              <h2 class="has-text-black is-size-5 ml-3">Edit Thread</h2>
-            </div>
-            <button class="delete" aria-label="close" onclick="launchModal('{{ thread.username }}_{{ thread.id }}');"></button>
-        </header>
-
-        <section class="modal-card-body">
-            <form action="{{ '/forum/reply/update/' }}{{ reply.reply_id }}" method="POST" enctype="multipart/form-data">
-                <div class="columns round-1">
-                    <div class="column is-three-quarters">
-                        <h2 class="has-text-black is-size-5 ml-3">Edit Reply</h2>
-                        <textarea class="textarea input-shadow heading-font" name="thread-caption" placeholder="Write something here" required>{{ reply.caption }}</textarea>
-                        {% if errors %}
-                            {% if errors["caption"] %}
-                                <p class="mt-2 mb-4 n has-text-danger"> {{ errors['caption'] }} </p>
-                            {% endif %}
-                        {% endif %}  
-                    </div>
-                    <div class="column is-one-quarter is-flex is-flex-direction-column is-justify-content-flex-end">
-        
-                        <div id="image-upload-preview"></div>
-        
-                        <div id="post-image-upload" class="file mb-3">
-                            <label class="file-label">
-                                <input class="file-input mb-5 body-font" type="file" name="thread-image" accept="image/png, image/jpeg, image/jpg">
-                                <span class="file-cta">
-                                    <span class="file-label heading-font"> 
-                                        <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
-                                        Add Images 
-                                    </span>
-                                </span>
-                            </label>
-                        </div> 
-                        
-                        <input class="button yellow-bg spaced-font" type="submit" value="SAVE CHANGES">
-                    </div>
+            <header class="modal-card-head">
+                <div class="modal-card-title is-flex">
+                <img class="image is-32x32" src="/assets/profile_edit.png"> 
+                <h2 class="has-text-black is-size-5 ml-3">Edit Reply</h2>
                 </div>
-            </form>
-        </section>
+                <button class="delete" aria-label="close" onclick="launchModal('{{ reply.username }}_{{ reply.thread_id }}_{{ reply.reply_id }}');"></button>
+            </header>
 
-    </div>
-</section>
+            <section class="modal-card-body">
+                <form action="?" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="form-type" value="edit-reply">
+                <input type="hidden" name="reply-id" value="{{ reply.reply_id }}">
+                <div class="is-flex is-flex-direction-column">
+                    <textarea class="textarea input-shadow heading-font" name="reply-caption" placeholder="Write something here" required>{{ reply.caption }}</textarea>
+                    {% if errors %}
+                        {% if errors["new-caption"] and errors[reply-id] == reply.reply_id %}
+                            <p class="mt-2 mb-4 n has-text-danger"> {{ errors['new-caption'] }} </p>
+                        {% endif %}
+                    {% endif %}  
+
+                    {% if reply.image_path != None %}
+                        <figure id="image-upload-preview" class="image m-3">
+                            <img class="round-1" src ="{{ '/reply/' + reply.image_path }}">
+                        </figure>
+                    {% endif %}
+
+                    <div id="post-image-upload" class="file my-3">
+                        <label class="file-label">
+                            <input class="file-input mb-5 body-font" type="file" name="reply-image" accept="image/png, image/jpeg, image/jpg">
+                            <span class="file-cta">
+                                <span class="file-label heading-font"> 
+                                    <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
+                                    Add Images 
+                                </span>
+                            </span>
+                        </label>
+                    </div> 
+                    
+                    <input class="button yellow-bg spaced-font" type="submit" value="SAVE CHANGES">
+                </div>
+                </form>
+            </section>
+
+        </div>
+    </section>
+
+    <!-- DELETE REPLY MODAL -->
+    <section id="{{ reply.username }}_reply_delete_{{ reply.reply_id }}" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card m-2">
+
+            <header class="modal-card-head">
+                <div class="modal-card-title is-flex">
+                <img class="image is-32x32" src="/assets/profile_delete.png"> 
+                <h2 class="has-text-black is-size-5 ml-3">Delete Post?</h2>
+                </div>
+                <button class="delete" aria-label="close" onclick="launchModal('{{ reply.username }}_reply_delete_{{ reply.reply_id }}');"></button>
+            </header>
+
+            <form action="?" method="POST" enctype="multipart/form-data">
+            <section class="modal-card-body">
+                <p class="m-2 is-size-6">This action cannot be undone.</p>
+                <input type="hidden" name="form-type" value="delete-reply">
+                <input type="hidden" name="reply-id" value="{{ reply.reply_id }}">
+            </section>
+            <footer class="modal-card-foot">
+                <input class="button is-danger spaced-font" type="submit" value="DELETE">
+                <button class="button spaced-font" onclick="launchModal('{{ reply.username }}_reply_delete_{{ reply.reply_id }}');">
+                    CANCEL
+                </button>
+            </footer>
+            </form>
+        </div>
+    </section>
+    {% endif %}
+
+    {% if errors %}
+        {% if errors['reply-id'] == reply.reply_id %}
+            <script> launchModal('{{ reply.username }}_{{ reply.thread_id }}_{{ reply.reply_id }}') </script>
+        {% endif %}
+    {% endif %}
+
 {% endfor %}
 
 </div>
 </div>
-
 {% endblock %}

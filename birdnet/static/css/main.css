@@ -106,15 +106,22 @@
 
 /* ELEMENTS */
 
-.multline {
-    height: 70px;
-    resize: none;
-}
-
 /* PAGE-RULES */
 #container {
     margin: 0px;
     background: whitesmoke;
+}
+
+.thread-container {
+    width: 600px;
+}
+
+.reply-div {
+    width: 100%;
+}
+
+.thread-div {
+    width: 100%;
 }
 
 body {  font-family: Roboto;    }
@@ -158,6 +165,10 @@ body {  font-family: Roboto;    }
     
     .login-card {
         width: 95%;
+    }
+
+    .thread-container {
+        width: 100%;
     }
 }
 
