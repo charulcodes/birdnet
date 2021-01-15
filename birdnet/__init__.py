@@ -2,6 +2,7 @@ from flask import Flask, session
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
+from flask_migrate import Migrate
 
 app = Flask(__name__, 
         static_url_path='', 
@@ -11,6 +12,7 @@ app = Flask(__name__,
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost/birdnet'
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 app.config['SECRET_KEY'] = 'bird_secret'
 app.config['SESSION_TYPE'] = 'sqlalchemy'

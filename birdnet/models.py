@@ -12,6 +12,7 @@ class User(db.Model):
     profile_photo_path = db.Column(db.String(200), default="default.png")
     bio = db.Column(db.String(300))
     signup_date = db.Column(db.DateTime, default=datetime.utcnow)
+    is_admin = db.Column(db.Boolean, default=False)
 
     threads = db.relationship('Thread', backref="creator", lazy=True)
     replies = db.relationship('Reply', backref="creator", lazy=True)
