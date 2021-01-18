@@ -164,3 +164,12 @@ def validate_reply_for_updation(reply, new_caption):
             reply.caption = new_caption
 
     return [errors, reply]
+
+def validate_description_for_bird_details(description):
+
+   errors = {}
+   if len(description) > 500:
+        errors['description'] = 'Description should be less than 500 characters'
+   
+   return errors
+   

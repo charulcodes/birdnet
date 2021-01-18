@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="my-3 mx-3">
+{% if status == "successful" %}
+    <div class="notification is-success">
+        Data Updated successfully! 
+    </div>
+{% elif status == "unsuccessful" %}
+    <div class="notification is-danger">
+        Error occured. Please try again.
+    </div>
+{% endif %}
+</div>
+
+<div class="is-flex is-flex-wrap-wrap">
+<div class="columns my-3 mx-3 is-justify-content-center">
+
+    <div class="column card is-one-third my-3 round-2">
+
+        <figure class="column is-size-3 my-2">
+            <img class='image is-size-6' src="{{'\\birdsearch_collection\\'+ bird_info.image_path}}"/>
+        </figure>
+
+        <div class="column"> 
+            <h5 class="heading-font has-text-black">Name Of the bird </h5>
+            {{bird_info.bird_name}}
+
+            <h5 class="heading-font has-text-black mt-3">Scientific name </h5></td>
+            {{bird_info.scientific_name}}
+
+            <h5 class="heading-font has-text-black mt-3">Description </h5></td>
+            <p>{{bird_info.description}}</p>
+        </div>
+
+    </div>
+
+    <div class="column card is-half my-3 mx-5 p-3 round-2">
+        <form class="m-3" action="" method="POST" enctype="multipart/form-data">
+            
+            <h2 class="heading-font has-text-black is-align-items-center is-size-3">Update details</h2>
+            <label class="label mt-4">Name of the bird:</label>
+            <input class="input input-shadow" type="text" name="name" value= "{{bird_info.bird_name}}" /> 
+            <label class="label mt-4">Scientific name :</label>
+            <input class="input input-shadow" type="text" name="scientific-name" value = "{{bird_info.scientific_name}}" />
+            <label class="label mt-4">Description:</label>
+            <textarea class="textarea input-shadow has-text-black" name="description">{{bird_info.description}}</textarea>
+        
+            <div id="bird-image-upload" class="file mt-4 mb-5">
+                <label class="file-label">
+                    <input class="file-input mb-5 body-font" type="file" name="bird-image" accept="image/png, image/jpeg, image/jpg">
+                    <span class="file-cta">
+                        <span class="file-label heading-font"> 
+                            <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
+                            Replace Image
+                        </span>
+                    </span>
+                    <span class="file-name">
+                        No file chosen
+                    </span>
+                </label>
+            </div> 
+
+            <input class="input button round-1 yellow-bg spaced-font" type="submit" value="SUBMIT">
+        </form>
+
+    </div>
+    
+</div>
+</div>
+
+
+<script>
+const fileInput = document.querySelector('#bird-image-upload input[type=file]');
+fileInput.onchange = () => {
+if (fileInput.files.length > 0) {
+const fileName = document.querySelector('#bird-image-upload .file-name');
+    fileName.textContent = fileInput.files[0].name;
+}
+}
+</script>
+{% endblock %}

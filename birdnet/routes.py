@@ -1,10 +1,11 @@
 from flask import render_template, session, request, redirect, url_for, abort
 from datetime import datetime
+from sqlalchemy import or_
 
 from birdnet.models import User, Thread, Reply, BirdDetails, db
 from birdnet import app, bcrypt
-from birdnet.validations import validate_new_user, validate_details_for_updation, validate_password, validate_new_thread, validate_thread_for_updation, validate_reply_for_updation
-from birdnet.utils import save_profile_photo, save_thread_photo, save_reply_photo
+from birdnet.validations import validate_new_user, validate_details_for_updation, validate_password, validate_new_thread, validate_thread_for_updation, validate_reply_for_updation, validate_description_for_bird_details
+from birdnet.utils import save_profile_photo, save_thread_photo, save_reply_photo, save_bird_photo
 
 
 # ------------------------------------ HOME & ABOUT PAGES ------------------------------------
@@ -22,9 +23,98 @@ def about():
 def birdid():
     return render_template('birdid.html', title='Bird Identification')
 
-@app.route("/search/")
+@app.route("/search/", methods=['GET','POST'])
 def search():
-    return render_template('search.html')
+    if request.method == 'POST':
+       bird = request.form['search-query'].strip().title()
+       bird = bird.replace(' ','-')
+
+       results = BirdDetails.query.filter(
+                or_(
+                BirdDetails.bird_name.contains(bird),
+                BirdDetails.scientific_name.contains(bird)
+            )).all()
+
+       return render_template('search.html',bird_data = results)
+    elif request.method == 'GET':
+       return render_template('search.html')
+
+@app.route("/search/Edit/<bird_id>",methods=['GET','POST'])
+def edit_bird(bird_id):
+    bird = BirdDetails.query.get_or_404(bird_id)
+    bird_details = BirdDetails.query.filter_by(bird_id = bird.bird_id).first()
+
+    if request.method == 'POST':
+
+            b_name = request.form["name"].strip().title()
+            name = b_name.replace(' ','-')
+
+            b_scientific_name = request.form["scientific-name"].strip().title()
+            scientific_name = b_scientific_name.replace(' ','-')
+
+            description = request.form["description"]
+            filename = None
+
+            if request.files['bird-image']:
+                filename = save_bird_photo(request.files['bird-image'])
+                bird_details.image_path = filename 
+
+            errors = validate_description_for_bird_details('description')
+
+            if errors == {}:
+                bird_details.bird_name = name
+                bird_details.scientific_name = scientific_name
+                bird_details.description = description
+
+                db.session.add(bird_details)
+                db.session.commit()
+                return render_template('edit_bd.html', status="successful", errors= errors ,bird_info = bird_details)
+            else:
+                return render_template('edit_bd.html', status="unsuccessful", errors= errors , bird_info = bird_details)
+
+    elif request.method == 'GET':
+        return render_template("edit_bd.html",bird_info = bird_details)
+
+@app.route("/search/Delete/<bird_id>",methods=['GET','POST'])
+def delete_bird(bird_id):
+        bird = BirdDetails.query.get_or_404(bird_id)
+        bird_details = BirdDetails.query.filter_by(bird_id = bird.bird_id).first()
+
+        if request.method == 'POST':
+            db.session.delete(bird_details)
+            db.session.commit()
+            return render_template('delete_bd.html', status="successful")
+
+        elif request.method == 'GET':
+            return render_template("delete_bd.html")
+
+@app.route("/bird_details_panel/",methods=['GET', 'POST'])
+def bird_details_panel():
+    if request.method == 'POST':
+        b_name = request.form["name"].strip().title()
+        name = b_name.replace(' ','-')
+
+        b_scientific_name = request.form["scientific-name"].strip().title()
+        scientific_name = b_scientific_name.replace(' ','-')
+
+        description = request.form["description"]
+        filename = None
+
+        if request.files['bird-image']:
+            filename = save_bird_photo(request.files['bird-image'])
+
+        errors = validate_description_for_bird_details('description')
+
+        if errors == {}:
+            bird_details = BirdDetails(bird_name= name, scientific_name=scientific_name, description = description, image_path=filename)
+            db.session.add(bird_details)
+            db.session.commit()
+            return render_template('panel.html', title='Bird-details', status="successful")
+        else:
+            return render_template('panel.html', title='Bird-details', status="unsuccessful", errors= errors)
+    
+    elif request.method == 'GET':
+        return render_template('panel.html', title='Bird-Details')
 
 
 # ------------------------------------ ERROR PAGES ------------------------------------

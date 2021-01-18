@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="my-3 mx-3">
+{% if status == "successful" %}
+    <div class="notification is-success">
+        Bird entry deleted successfully 
+    </div>
+{% endif %}
+</div>
+
+<br>
+
+<div class="columns is-desktop is-centered my-6">
+    <div class="column card my-5 mx-6 is-half is-rounded is-flex-direction-column">
+        <form action="?" method="POST" enctype="multipart/form-data">
+            <div class="card-content">
+                <h1 class="heading-font has-text-black is-size-3">Delete bird</h1>
+                <p class=" is-size-6 mt-4">Are you sure you want to delete this entry? This action cannot be undone.</p>
+            </div>
+            
+            <footer class="card-footer is-justify-content-center">
+                <input class="button is-danger spaced-font px-3 m-3" type="submit" value="DELETE"/> 
+                <button class="button spaced-font p-3 m-3"> CANCEL </button>
+            </footer>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

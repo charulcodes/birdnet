@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+
+<br>
+{% if status == "successful" %}
+    <div class="notification is-success">
+        Data saved successfully! 
+    </div>
+{% elif status == "unsuccessful" %}
+    <div class="notification is-danger">
+        Error occured. Please try again.
+    </div>
+{% endif %}
+
+
+<div class="columns is-desktop is-centered">
+    <div class="column card py-5 px-6 is-half round-2 my-5">
+    <h3 class="heading-font is-size-4 has-text-black mx-2 has-text-centered my-5">Add a new bird in the database</h4>
+    <!-- <h3 class="heading-font is-size-4 has-text-black mx-2 has-text-centered">Enter Bird Details</h1> -->
+        <form class="my-2" action="" method="POST" enctype="multipart/form-data">
+                    <label class="label ">Name of the bird:</label>
+                    <input class="input input-shadow" type="text" name="name" required/> 
+                    <label class="label mt-3">Scientific name :</label>
+                    <input class="input input-shadow" type="text" name="scientific-name" required/> 
+                    <label class="label mt-3">Description:</label>
+                    <textarea class="textarea input-shadow" name="description" required></textarea>
+                
+                    <div id="bird-image-upload" class="file my-3">
+                        <label class="file-label">
+                            <input class="file-input mb-5 body-font" type="file" name="bird-image" accept="image/png, image/jpeg, image/jpg">
+                            <span class="file-cta">
+                                <span class="file-label heading-font"> 
+                                    <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
+                                    Add Image
+                                </span>
+                            </span>
+                            <span class="file-name">
+                                No file chosen
+                            </span>
+                        </label>
+                    </div> 
+        
+                    <input class="input button round-1 yellow-bg spaced-font" type="submit" value="SUBMIT">
+         </form>
+        
+    </div>
+</div>
+
+<script>
+    const fileInput = document.querySelector('#bird-image-upload input[type=file]');
+    fileInput.onchange = () => {
+        if (fileInput.files.length > 0) {
+        const fileName = document.querySelector('#bird-image-upload .file-name');
+            fileName.textContent = fileInput.files[0].name;
+        }
+    }
+</script>
+
+{% endblock %}
+
+
+
+
+
+   

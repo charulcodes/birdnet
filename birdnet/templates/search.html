@@ -1,4 +1,58 @@
 {% extends "base.html" %}
-{% block content %}
+<div class="is-flex is-flex-wrap-wrap is-justify-content-space-around">
+
+    {% if not bird_data %}
+        {% if request.method == 'GET' %}
+        <div class="is-justify-content-center my-3 mx-5 p-3 is-justify-content-space-around">
+            <form class="is-flex mb-2" action="/search/" method="POST">
+                <input name="search-query" class="input input-shadow" placeholder="Search for a bird" type="text"/> 
+                <input class="button is-light ml-2" type="image" src="/assets/feature_search.png" width="58" height="48"/>   
+        </form>
+        </div>
+        {% else %}
+        <div class="is-flex is-flex-direction-column">
+            <h1 class="heading-font is-size-3 has-text-black has-text-centered my-3">No Match Found</h1>
+
+            <figure class="image p-3 m-5">
+                <img src="/images/sample_img_2.png">
+            </figure>
+        </div>
+            
+
+        {% endif %}
+    {% endif %}
+
+    
+    {% for row in bird_data %}
+    <div class="bird-detail-card card is-justify-content-center my-3">
+
+        <div class="columns is-justify-content-center my-2">
+                <div class="column is-one-third mx-3">
+                    <img class='image is-size-6'src="{{'\\birdsearch_collection\\'+ row.image_path}}"/>
+                </div>
+
+                <div class="column"> 
+                    <h5 class="heading-font has-text-black">Name Of the bird </h5>
+                    {{row.bird_name}}
+
+                    <h5 class="heading-font has-text-black">Scientific name </h5></td>
+                    {{row.scientific_name}}
+
+                    <h5 class="heading-font has-text-black">Description </h5></td>
+                    <p>{{row.description}}</p>
+                </div>
+        </div>
+
+        <div class="card-footer is-align-items-center is-justify-content-space-around">
+            <a class="card-footer-item p-3" href="{{ '/search/Edit/{}'.format(row.bird_id) }}" >EDIT</a>
+            <a class="card-footer-item p-3" href="{{ '/search/Delete/{}'.format(row.bird_id) }}">DELETE</a>
+        </div>
+
+    </div>
+        
+    {%endfor%}
+    
+</div>
+
 
 {% endblock %}

@@ -149,6 +149,12 @@ body {  font-family: Roboto;    }
     width: 35vw;
 }
 
+.bird-detail-card
+{
+    width: 47vw;
+}
+
+
 #popular-posts {
     display: block;
 }
@@ -164,6 +170,10 @@ body {  font-family: Roboto;    }
     }
     
     .login-card {
+        width: 95%;
+    }
+
+    .bird-detail-card{
         width: 95%;
     }
 
