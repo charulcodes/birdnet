@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BirdNet | Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="icon" href="/assets/birdnet_logo.png" type="image/png" sizes="16x16">
+
+    
+    <script>
+        function launchRevokeModal(username) {
+            var modal = document.getElementById("revokeModal");
+
+            var modalFormField = document.getElementById("revokeUsername");
+            modalFormField.value = username
+
+            modal.classList.toggle("is-active");
+        }
+
+        function closeRevokeModal(username) {
+            var modal = document.getElementById("revokeModal");
+            modal.classList.toggle("is-active");
+        }
+    </script>
+</head>
+<body>
+<div id="container">
+    <div class="is-flex is-flex-direction-column is-align-items-center">
+        <br>
+        <a href="/" class="is-flex my-5">
+            <img src="/assets/birdnet_logo.png" width="100" height="30">
+            <h2 class="heading-font is-size-3 has-text-black mx-2">BirdNet</h2>
+        </a>
+
+        {% if status == "user-made-admin" %}
+            <span class="notification is-success">
+                User <b>{{ new_admin_user.username  }}</b> is now an admin
+            </span>
+        {% elif login == "user-does-not-exist" %}
+            <span class="notification is-danger">
+                The user <b>{{ new_admin_user }}</b> does not exist
+            </span>
+        {% elif status == "admin-rights-revoked" %}
+            <span class="notification is-success">
+                User <b>{{ revoke_admin_user.username  }}</b> is no longer an admin
+            </span>
+        {% elif login == "user-to-be-revoked-does-not-exist" %}
+            <span class="notification is-danger">
+                The user <b>{{ revoke_admin_user }}</b> does not exist
+            </span>
+        {% endif %}
+
+        <div class="login-card">
+        <section class="card p-5 m-2">
+            <h1 class="heading-font is-size-3 has-text-black my-5 has-text-centered">Grant admin rights</h1>
+            <form class="my-2" action="" method="POST">
+                <label class="label">Type username:</label>
+                <input class="input input-shadow" type="text" name="new-admin" required/>
+                <input type="hidden" name="type" value="grant-rights">
+
+                <input class="input button round-1 yellow-bg spaced-font mt-4" type="submit" value="GRANT RIGHTS">
+            </form>
+        </section>
+        </div>
+
+        <h1 class="heading-font is-size-3 has-text-black mx-2 mt-6 mb-3 has-text-centered">Current admins</h1>
+
+        <table class="table mb-6">
+            <tr>
+                <td>User ID</td>
+                <td>Username</td>
+                <td>Revoke admin rights?</td>
+            </tr>
+        {% for user in admin_users %}
+            <tr>
+                <td> {{ user.user_id }} </td>
+                <td><a href="/profile/{{ user.username }}"> {{ user.username }} </a></td>
+                <td><button class="button is-small is-danger" id="{{ user.username }}" onclick="launchRevokeModal('{{ user.username }}')">Revoke</button></td>
+            </tr>
+        {% endfor %}
+        </table>
+
+
+        <div style="height: 300px;"> &nbsp; </div>
+    </div>
+
+    <section id="revokeModal" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card m-2">
+    
+            <header class="modal-card-head">
+              <div class="modal-card-title is-flex">
+                <img class="image is-32x32" src="/assets/profile_edit.png"> 
+                <a class="has-text-black is-size-5 ml-3" href="#">Revoke admin rights</a>
+              </div>
+              <button class="delete" aria-label="close" onclick="closeRevokeModal();"></button>
+            </header>
+    
+            <section class="modal-card-body">
+                <form class="my-2" action="?" method="POST">
+                    <div class="columns mb-5">
+                        <div class="column px-2">
+                            <p class=" is-size-6 mt-4">Are you sure you want to revoke admin rights?</p>
+                        </div>
+                        <input id="revokeUsername" type="hidden" name="revoke-admin-rights" value="">
+                        <input type="hidden" type="hidden" name="type" value="revoke-rights">
+                    </div>
+    
+                    
+                    <div class="is-flex is-justify-content-center" > 
+                        <input class="input button round-1 is-danger spaced-font" style="width: 60%;" type="submit" value="REVOKE RIGHTS"> 
+                    </div>
+                </form>
+            </section>
+        </div>
+    </section>
+</div>
+</body>
+</html>

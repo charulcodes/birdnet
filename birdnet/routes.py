@@ -41,11 +41,60 @@ def search():
 
 @app.route("/search/Edit/<bird_id>",methods=['GET','POST'])
 def edit_bird(bird_id):
-    bird = BirdDetails.query.get_or_404(bird_id)
-    bird_details = BirdDetails.query.filter_by(bird_id = bird.bird_id).first()
+    if ("username" in session) and (session["is-admin"] == "True"):
+        bird = BirdDetails.query.get_or_404(bird_id)
+        bird_details = BirdDetails.query.filter_by(bird_id = bird.bird_id).first()
 
-    if request.method == 'POST':
+        if request.method == 'POST':
+                b_name = request.form["name"].strip().title()
+                name = b_name.replace(' ','-')
+                b_scientific_name = request.form["scientific-name"].strip().title()
+                scientific_name = b_scientific_name.replace(' ','-')
+                description = request.form["description"]
+                filename = None
 
+                if request.files['bird-image']:
+                    filename = save_bird_photo(request.files['bird-image'])
+                    bird_details.image_path = filename 
+
+                errors = validate_description_for_bird_details('description')
+
+                if errors == {}:
+                    bird_details.bird_name = name
+                    bird_details.scientific_name = scientific_name
+                    bird_details.description = description
+
+                    db.session.add(bird_details)
+                    db.session.commit()
+                    return render_template('edit_bd.html', status="successful", errors= errors ,bird_info = bird_details)
+                else:
+                    return render_template('edit_bd.html', status="unsuccessful", errors= errors , bird_info = bird_details)
+
+        elif request.method == 'GET':
+            return render_template("edit_bd.html",bird_info = bird_details)
+    else:
+        abort(404)
+
+@app.route("/search/Delete/<bird_id>",methods=['GET','POST'])
+def delete_bird(bird_id):
+    if ("username" in session) and (session["is-admin"] == "True"):
+        bird = BirdDetails.query.get_or_404(bird_id)
+        bird_details = BirdDetails.query.filter_by(bird_id = bird.bird_id).first()
+
+        if request.method == 'POST':
+            db.session.delete(bird_details)
+            db.session.commit()
+            return render_template('delete_bd.html', status="successful")
+
+        elif request.method == 'GET':
+            return render_template("delete_bd.html")
+    else:
+        abort(404)
+
+@app.route("/bird_details_panel/",methods=['GET', 'POST'])
+def bird_details_panel():
+    if ("username" in session) and (session["is-admin"] == "True"):
+        if request.method == 'POST':
             b_name = request.form["name"].strip().title()
             name = b_name.replace(' ','-')
 
@@ -57,64 +106,21 @@ def edit_bird(bird_id):
 
             if request.files['bird-image']:
                 filename = save_bird_photo(request.files['bird-image'])
-                bird_details.image_path = filename 
 
             errors = validate_description_for_bird_details('description')
 
             if errors == {}:
-                bird_details.bird_name = name
-                bird_details.scientific_name = scientific_name
-                bird_details.description = description
-
+                bird_details = BirdDetails(bird_name= name, scientific_name=scientific_name, description = description, image_path=filename)
                 db.session.add(bird_details)
                 db.session.commit()
-                return render_template('edit_bd.html', status="successful", errors= errors ,bird_info = bird_details)
+                return render_template('panel.html', title='Bird-details', status="successful")
             else:
-                return render_template('edit_bd.html', status="unsuccessful", errors= errors , bird_info = bird_details)
-
-    elif request.method == 'GET':
-        return render_template("edit_bd.html",bird_info = bird_details)
-
-@app.route("/search/Delete/<bird_id>",methods=['GET','POST'])
-def delete_bird(bird_id):
-        bird = BirdDetails.query.get_or_404(bird_id)
-        bird_details = BirdDetails.query.filter_by(bird_id = bird.bird_id).first()
-
-        if request.method == 'POST':
-            db.session.delete(bird_details)
-            db.session.commit()
-            return render_template('delete_bd.html', status="successful")
-
+                return render_template('panel.html', title='Bird-details', status="unsuccessful", errors= errors)
+        
         elif request.method == 'GET':
-            return render_template("delete_bd.html")
-
-@app.route("/bird_details_panel/",methods=['GET', 'POST'])
-def bird_details_panel():
-    if request.method == 'POST':
-        b_name = request.form["name"].strip().title()
-        name = b_name.replace(' ','-')
-
-        b_scientific_name = request.form["scientific-name"].strip().title()
-        scientific_name = b_scientific_name.replace(' ','-')
-
-        description = request.form["description"]
-        filename = None
-
-        if request.files['bird-image']:
-            filename = save_bird_photo(request.files['bird-image'])
-
-        errors = validate_description_for_bird_details('description')
-
-        if errors == {}:
-            bird_details = BirdDetails(bird_name= name, scientific_name=scientific_name, description = description, image_path=filename)
-            db.session.add(bird_details)
-            db.session.commit()
-            return render_template('panel.html', title='Bird-details', status="successful")
-        else:
-            return render_template('panel.html', title='Bird-details', status="unsuccessful", errors= errors)
-    
-    elif request.method == 'GET':
-        return render_template('panel.html', title='Bird-Details')
+            return render_template('panel.html', title='Bird-Details')
+    else:
+        abort(404)
 
 
 # ------------------------------------ ERROR PAGES ------------------------------------
@@ -162,6 +168,7 @@ def login(delete_param = None):
             session['user_id'] = user.user_id
             session['username'] = user.username
             session['profile-photo'] = user.profile_photo_path
+            session['is-admin'] = user.is_admin
             if delete_param == True:
                 return redirect(url_for('delete_account'))
             else:
@@ -183,6 +190,7 @@ def logout():
     session.pop('user_id')
     session.pop('username')
     session.pop('profile-photo')
+    session.pop('is-admin')
     return redirect(url_for('login'))
 
 # Profile Page 
@@ -218,6 +226,7 @@ def profile(username_param):
                 session['user_id'] = current_user.user_id
                 session['username'] = current_user.username
                 session['profile-photo'] = current_user.profile_photo_path
+                session['is-admin'] = current_user.is_admin
                 return render_template('profile.html', title='Profile', user = current_user, updation = "successful", recent_threads = threads)
             else:
                 return render_template('profile.html', title='Profile', user = current_user, errors = errors, recent_threads = threads)         
@@ -273,6 +282,45 @@ def delete_account(relogin = None):
             return render_template('delete_account.html') 
         else:
             abort(404)
+
+@app.route("/superadmin_panel/", methods=['GET', 'POST'])
+def superadmin_panel():
+    admin_users = User.query.filter_by(is_admin = True).all()
+    if request.method == "POST":
+
+        if request.form["type"] == "grant-rights":
+            new_admin_username = request.form["new-admin"]
+
+            NewAdminUser = User.query.filter_by(username = new_admin_username).first()
+            if NewAdminUser != None:
+                NewAdminUser.is_admin = True
+                db.session.add(NewAdminUser)
+                db.session.commit()
+                admin_users = User.query.filter_by(is_admin = True).all()
+                return render_template("superadmin_panel.html", status="user-made-admin", new_admin_user = NewAdminUser, admin_users = admin_users)
+            else:
+                return render_template("superadmin_panel.html", status="user-does-not-exist", new_admin_user = new_admin_username, admin_users = admin_users)
+
+        elif request.form["type"] == "revoke-rights":
+            revoke_admin_username = request.form["revoke-admin-rights"]
+            RevokeAdminUser = User.query.filter_by(username = revoke_admin_username).first()
+            if RevokeAdminUser != None:
+                RevokeAdminUser.is_admin = False
+                db.session.add(RevokeAdminUser)
+                db.session.commit()
+                admin_users = User.query.filter_by(is_admin = True).all()
+                return render_template("superadmin_panel.html", status="admin-rights-revoked", revoke_admin_user = RevokeAdminUser, admin_users = admin_users)
+            else:
+                return render_template("superadmin_panel.html", status="user-to-be-revoked-does-not-exist", revoke_admin_user = revoke_admin_username, admin_users = admin_users)
+    
+    elif request.method == "GET":
+        if "username" in session:
+            if session["username"] == "admin" or session["username"] == "superadmin":
+                return render_template("superadmin_panel.html", admin_users = admin_users)
+            else:
+                abort(404)
+            
+
 
 # ------------------------------------ FORUM ------------------------------------
 @app.route("/forum/", methods=['GET', 'POST'])

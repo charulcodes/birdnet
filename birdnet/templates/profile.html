@@ -42,6 +42,16 @@
             </div>
             {% if user.username == session['username'] %}
             <div class="is-flex is-justify-content-center is-align-items-center mb-3">
+                {% if user.username == "superadmin" or user.username == "admin" %}
+                    <a class="has-text-black is-size-5 ml-3" href="/superadmin_panel/">Visit Superadmin Panel</a>
+                {% endif %}
+            </div>
+            <div class="is-flex is-justify-content-center is-align-items-center mb-3">
+                {% if user.is_admin %}
+                    <a class="has-text-black is-size-5 ml-3" href="/bird_details_panel/">Visit Bird Details Panel</a>
+                {% endif %}
+            </div>
+            <div class="is-flex is-justify-content-center is-align-items-center mb-3">
                 <img class="image is-32x32" src="/assets/profile_edit.png"> 
                 <a class="has-text-black is-size-5 ml-3" href="javascript:launchModal('editModal');">Edit Profile Information</a>
             </div>

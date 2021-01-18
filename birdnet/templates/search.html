@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block content %}
 <div class="is-flex is-flex-wrap-wrap is-justify-content-space-around">
 
     {% if not bird_data %}
@@ -43,14 +44,18 @@
                 </div>
         </div>
 
-        <div class="card-footer is-align-items-center is-justify-content-space-around">
-            <a class="card-footer-item p-3" href="{{ '/search/Edit/{}'.format(row.bird_id) }}" >EDIT</a>
-            <a class="card-footer-item p-3" href="{{ '/search/Delete/{}'.format(row.bird_id) }}">DELETE</a>
-        </div>
+        {% if session["username"] %}
+            {% if session["is_admin"] == "True" %}
+                <div class="card-footer is-align-items-center is-justify-content-space-around">
+                    <a class="card-footer-item p-3" href="{{ '/search/Edit/{}'.format(row.bird_id) }}" >EDIT</a>
+                    <a class="card-footer-item p-3" href="{{ '/search/Delete/{}'.format(row.bird_id) }}" >DELETE</a>
+                </div>
+            {% endif %}
+        {% endif %}
 
     </div>
         
-    {%endfor%}
+    {% endfor %}
     
 </div>
 
