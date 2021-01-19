@@ -3,10 +3,10 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=flask,python
 
 ### Project specific files and folders ###
-birdsearch_collection/
-profile_photos/
-reply/
-thread/
+/birdsearch_collection/
+/profile_photos/
+/reply/
+/thread/
 
 ### Flask ###
 instance/*
