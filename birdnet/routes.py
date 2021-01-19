@@ -1,6 +1,6 @@
 from flask import render_template, session, request, redirect, url_for, abort
 from datetime import datetime
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 
 from birdnet.models import User, Thread, Reply, BirdDetails, db
 from birdnet import app, bcrypt
@@ -28,20 +28,23 @@ def search():
     if request.method == 'POST':
        bird = request.form['search-query'].strip().title()
        bird = bird.replace(' ','-')
+       
+       if bird != "":
+           results = BirdDetails.query.filter(
+               or_(
+                   BirdDetails.bird_name.contains(bird),
+                   BirdDetails.scientific_name.contains(bird)
+                   )).all()
+       else:
+           results = None
 
-       results = BirdDetails.query.filter(
-                or_(
-                BirdDetails.bird_name.contains(bird),
-                BirdDetails.scientific_name.contains(bird)
-            )).all()
-
-       return render_template('search.html',bird_data = results)
+       return render_template('search.html', bird_data = results)
     elif request.method == 'GET':
        return render_template('search.html')
 
 @app.route("/search/Edit/<bird_id>",methods=['GET','POST'])
 def edit_bird(bird_id):
-    if ("username" in session) and (session["is-admin"] == "True"):
+    if ("username" in session) and (session["is-admin"] == True):
         bird = BirdDetails.query.get_or_404(bird_id)
         bird_details = BirdDetails.query.filter_by(bird_id = bird.bird_id).first()
 
@@ -77,7 +80,7 @@ def edit_bird(bird_id):
 
 @app.route("/search/Delete/<bird_id>",methods=['GET','POST'])
 def delete_bird(bird_id):
-    if ("username" in session) and (session["is-admin"] == "True"):
+    if ("username" in session) and (session["is-admin"] == True):
         bird = BirdDetails.query.get_or_404(bird_id)
         bird_details = BirdDetails.query.filter_by(bird_id = bird.bird_id).first()
 
@@ -93,7 +96,7 @@ def delete_bird(bird_id):
 
 @app.route("/bird_details_panel/",methods=['GET', 'POST'])
 def bird_details_panel():
-    if ("username" in session) and (session["is-admin"] == "True"):
+    if ("username" in session) and (session["is-admin"] == True):
         if request.method == 'POST':
             b_name = request.form["name"].strip().title()
             name = b_name.replace(' ','-')
@@ -325,6 +328,7 @@ def superadmin_panel():
 # ------------------------------------ FORUM ------------------------------------
 @app.route("/forum/", methods=['GET', 'POST'])
 def forum():
+    popular_threads = Thread.query.order_by(Thread.view_count).limit(7).all()
     if request.method == 'POST':
         title = request.form["thread-title"].strip()
         caption = request.form["thread-caption"].strip()
@@ -344,16 +348,19 @@ def forum():
             return render_template('forum.html', title='Forum', status="successful", new_threads = new_threads)
         else:
             new_threads = Thread.query.all()
-            return render_template('forum.html', title='Forum', status="unsuccessful", errors= errors, new_threads = new_threads)
+            return render_template('forum.html', title='Forum', status="unsuccessful", errors= errors, new_threads = new_threads, popular_threads=popular_threads)
     elif request.method == 'GET':
         new_threads = Thread.query.order_by(Thread.creation_date.desc()).all()
-        return render_template('forum.html', title='Forum', new_threads = new_threads)
+        return render_template('forum.html', title='Forum', new_threads = new_threads, popular_threads=popular_threads)
 
-# Post 
+# Thread
 @app.route("/forum/thread/<thread_id>", methods=['GET', 'POST'])
 def thread(thread_id):
     thread = Thread.query.get_or_404(thread_id)
     replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
+    thread.view_count = thread.view_count + 1
+    db.session.add(thread)
+    db.session.commit()
     if request.method == 'POST':
         if request.form['form-type'] == 'create-reply':
             username = session['username']
@@ -456,6 +463,23 @@ def all_threads():
     pass 
 
 # Search for a forum post
-@app.route("/forum/search/")
-def post_search():
-    return render_template('post_search.html')
+@app.route("/forum/search/", methods=['GET', 'POST'])
+def thread_search():
+    if request.method == "POST":
+        original_query = request.form['search-query']
+        query = request.form["search-query"].strip().lower()
+
+        thread_results = Thread.query.filter(
+                or_(
+                func.lower(Thread.title).contains(query),
+                func.lower(Thread.caption).contains(query)
+            )).all()
+
+        reply_results = Reply.query.filter(
+            or_(
+                func.lower(Reply.caption).contains(query)
+            )).all()
+
+        return render_template('thread_search.html', thread_results = thread_results, reply_results = reply_results, query=original_query)
+    elif request.method == "GET":
+        return render_template('thread_search.html')

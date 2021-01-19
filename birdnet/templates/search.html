@@ -19,11 +19,10 @@
             </figure>
         </div>
             
-
         {% endif %}
     {% endif %}
 
-    
+    {% if bird_data != None %}
     {% for row in bird_data %}
     <div class="bird-detail-card card is-justify-content-center my-3">
 
@@ -45,7 +44,7 @@
         </div>
 
         {% if session["username"] %}
-            {% if session["is_admin"] == "True" %}
+            {% if session["is-admin"] == True %}
                 <div class="card-footer is-align-items-center is-justify-content-space-around">
                     <a class="card-footer-item p-3" href="{{ '/search/Edit/{}'.format(row.bird_id) }}" >EDIT</a>
                     <a class="card-footer-item p-3" href="{{ '/search/Delete/{}'.format(row.bird_id) }}" >DELETE</a>
@@ -56,8 +55,7 @@
     </div>
         
     {% endfor %}
-    
+    {% endif %}
 </div>
-
 
 {% endblock %}

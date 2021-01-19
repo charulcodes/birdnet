@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- <div class="is-flex is-flex-wrap-wrap is-justify-content-space-around"> -->
+
+<div class="mt-4 columns is-flex is-flex-direction-column is-align-items-center p-3">
+    <div class="column is-two-thirds">
+
+{% if not thread_results and not reply_results %}
+    {% if request.method == 'GET' %}
+    <div class="is-justify-content-center my-3 mx-5 p-3 is-justify-content-center">
+        <form class="is-flex mb-2 is-align-content-center" action="/forum/search/" method="POST">
+            <input name="search-query" class="input input-shadow" placeholder="Search for a topic" type="text"/> 
+            <input class="button is-light ml-2" type="image" src="/assets/feature_search.png" width="58" height="48"/>   
+        </form>
+    </div>
+    {% else %}
+    <div class="is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
+        <h1 class="heading-font is-size-3 has-text-black has-text-centered mt-3">No results found for "{{ query }}"</h1>
+
+        <figure class="image p-3 mb-5">
+            <img src="/images/sample_img_2.png">
+        </figure>
+    </div>
+    {% endif %}
+{% endif %}
+
+        {% if thread_results or reply_results %}
+        <h1 class="heading-font is-size-4 has-text-black has-text-centered mb-6">Results found for "{{ query }}"</h1>
+        {% endif %}
+
+        {% for thread in thread_results %}
+        <div class="card p-3 round-1 mb-5">
+        <div class="media">
+            
+             <div class="media-left">
+                 <figure class="image is-48x48">
+                     <img class="is-rounded" src="{{ '/profile_photos/' + thread.creator.profile_photo_path }}"> 
+                 </figure>
+             </div>
+             <div class="media-content">
+                 <p class=""> 
+                     By <a href="{{ '/profile/' + thread.username}}">{{ thread.username }}</a> 
+                     at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} </p>
+                 <a class="heading-font is-size-4" href= "{{ '/forum/thread/{}'.format(thread.thread_id) }}" > {{ thread.title }} </a>
+             </div>
+         </div>
+
+         <div class="columns">
+             {% if thread.image_path != None %}
+             <div class="column is-one-third">
+                 <figure class="image">
+                     <img class="round-1" src="{{ '\\thread\\' + thread.image_path }}"> 
+                 </figure>
+             </div>
+             {% endif %}
+
+             <div class="column">
+                 <p class="">{{ thread.caption }}</p>    
+             </div>
+         </div>
+         <footer class="card-footer">
+             {% if 'username' in session %}
+             <a href="{{ '/forum/thread/{}'.format(thread.thread_id) }}" class="card-footer-item">Reply</a>
+             {% endif %}
+             <a href="#" class="card-footer-item"> {{ thread.view_count }} views</a>
+         </footer>
+        </div>
+        {% endfor %}
+
+        {% for reply in reply_results %}
+        <div class="card p-2 round-1 mb-3">
+        <div class="media">
+            <div class="media-left">
+                <figure class="image is-48x48">
+                    <img class="is-rounded" src="{{ '/profile_photos/' + reply.creator.profile_photo_path }}"> 
+                </figure>
+            </div>
+            <div class="media-content">
+                <p class="mb-2">
+                    By <a href="{{ '/profile/' + reply.username }}">{{ reply.username }}</a> 
+                            at {{ reply.creation_date.strftime('%H:%M, %d %B, %Y') }} 
+                </p>
+            </div>
+        </div>
+        <div class="pl-6">
+            {% if reply.image_path != None %}
+                <figure class="mx-6">
+                    <img class="image" src="{{ '\\reply\\' + reply.image_path }}"> 
+                </figure>
+            {% endif %}
+            <p class="">{{ reply.caption }}</p>
+
+            ________________<br>
+            <i><a href="{{ '/forum/thread/{}'.format(reply.thread_id) }}">Visit this thread</a></i>
+        </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- </div> -->
+{% endblock %}

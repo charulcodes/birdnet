@@ -79,6 +79,18 @@
         <h2 class="heading-font is-size-3 is-half my-5 ">Recent threads</h2>
         {% endif %}
 
+        {% if not recent_threads %}
+        <div class="is-flex is-flex-direction-column">
+            <i><h1 class="heading-font is-size-3 has-text-black has-text-centered my-3">No recent threads found</h1></i>
+            {% if 'username' in session %}
+                <a href="/forum/"> Start a new thread here </a>
+            {% endif %}
+            <figure class="image p-3 m-5">
+                <img src="/images/sample_img_2.png">
+            </figure>
+        </div>
+        {% endif %}
+
         {% for thread in recent_threads %}
         <div class="card p-3 round-1 mb-5">
             <div class="media">

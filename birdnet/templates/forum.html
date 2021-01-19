@@ -13,21 +13,24 @@
                <h2 class="spaced-font is-size-5 has-text-black mx-2">FORUM</h2>
            </a>
 
-           <form class="navbar-item is-flex is-flex-direction-column is-align-items-start mb-2" action="#" method="POST">
+           <form class="navbar-item is-flex is-flex-direction-column is-align-items-start mb-2" action="/forum/search/" method="POST">
                <label class="label mb-2">Search the forum:</label>
-               <input name="query" class="input input-shadow mb-4" placeholder="Search for a profile or post" type="text"/> 
+               <input name="search-query" class="input input-shadow mb-4" placeholder="Search for a profile or post" type="text"/> 
                <input class="button is-light mb-2" type="submit" value="Search"/>   
            </form>
        </div>
 
        <div id="popular-posts">
            <div class="card m-4 p-4 round-1 is-flex is-flex-direction-column">
-               <h2 class="heading-font is-size-4 has-text-centered mb-3">Popular Posts</h2>
-               <a class="has-text-black body-font py-1 is-size-6" href="#">Duis aute irure dolor </a>
-               <a class="has-text-black body-font py-1 is-size-6" href="#">In reprehenderit in  </a>
-               <a class="has-text-black body-font py-1 is-size-6" href="#">Voluptate velit esse </a>
-               <a class="has-text-black body-font py-1 is-size-6" href="#">Cillum dolore eu fugiat  </a>
-               <a class="has-text-black body-font py-1 is-size-6" href="#">Nulla pariatur voluptate </a>
+               <h2 class="heading-font is-size-4 has-text-centered mb-3">Popular Threads</h2>
+
+               {% if popular_threads %}
+                    {% for thread in popular_threads %}
+                        <a class="has-text-black body-font py-1 is-size-6" href="{{ '/forum/thread/{}'.format(thread.thread_id) }}">
+                            {{ thread.title }}
+                        </a>
+                    {% endfor %}
+                {% endif %}
            </div>
        </div>
        
@@ -79,6 +82,15 @@
 
        <h2 class="heading-font is-size-3 my-5 ">New Discussions</h2>
 
+    {% if new_threads == None %}
+    <div class="is-flex is-flex-direction-column">
+        <i><h1 class="heading-font is-size-3 has-text-black has-text-centered my-3">No New Discussion</h1></i>
+
+        <figure class="image p-3 m-5">
+            <img src="/images/sample_img_2.png">
+        </figure>
+    </div>
+    {% endif %}
     {% for thread in new_threads %}
        <div class="card p-3 round-1 mb-5">
            <div class="media">
@@ -111,7 +123,7 @@
             </div>
             <footer class="card-footer">
                 {% if 'username' in session %}
-                <a href="#" class="card-footer-item">Reply</a>
+                <a href="{{ '/forum/thread/{}'.format(thread.thread_id) }}" class="card-footer-item">Reply</a>
                 {% endif %}
                 <a href="#" class="card-footer-item"> {{ thread.view_count }} views</a>
             </footer>
