@@ -2,6 +2,8 @@ from birdnet.models import User, Thread, Reply, db
 import re
 from datetime import datetime
 
+#-----------USER MODULE--------------------------
+
 def validate_new_user(firstname, lastname, gender, email, username, password, reconfirmed_password):
     email_regex = "^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$"
     pwd_regex = reg = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,50}$"
@@ -116,6 +118,8 @@ def validate_password(password, reconfirmed_password):
     else:
         return True       
 
+#------------FORUM-----------------------------
+
 def validate_new_thread(title, caption):
     errors = {}
 
@@ -164,6 +168,8 @@ def validate_reply_for_updation(reply, new_caption):
             reply.caption = new_caption
 
     return [errors, reply]
+
+#-----------BIRD SEARCH---------------------------
 
 def validate_description_for_bird_details(description):
 
