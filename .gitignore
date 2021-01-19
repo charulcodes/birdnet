@@ -4,9 +4,9 @@
 
 ### Project specific files and folders ###
 /birdnet/static/birdsearch_collection/
-/birdnet/static/profile_photos/
 /birdnet/static/reply/
 /birdnet/static/thread/
+/birdnet/static/profile_photos/
 
 ### Flask ###
 instance/*
