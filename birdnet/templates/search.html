@@ -1,13 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="is-flex is-flex-wrap-wrap is-justify-content-space-around">
 
-    {% if not bird_data %}
+{% if not bird_data %}
         {% if request.method == 'GET' %}
-        <div class="is-justify-content-center my-3 mx-5 p-3 is-justify-content-space-around">
-            <form class="is-flex mb-2" action="/search/" method="POST">
+        <div class="is-flex is-flex-direction-column is-justify-content-center is-align-items-center my-3 mx-5 p-3">
+            <h1 class="heading-font is-size-2 has-text-black has-text-centered my-3">Search various bird species</h1>
+            <p class="body-font is-size-5 has-text-centered mb-3 is-align-items-center">
+                Know more about them, their scientific names and other things
+            </p>
+
+            
+            <img height="250px" width="250px" src="/images/sample_img_2.png">
+            
+            <form class="is-flex mb-2 mt-4" action="/search/" method="POST">
                 <input name="search-query" class="input input-shadow" placeholder="Search for a bird" type="text"/> 
-                <input class="button is-light ml-2" type="image" src="/assets/feature_search.png" width="58" height="48"/>   
+                <input class="button yellow-bg ml-2" type="image" src="/assets/feature_search.png" width="58" height="48"/>   
         </form>
         </div>
         {% else %}
@@ -21,6 +28,8 @@
             
         {% endif %}
     {% endif %}
+
+<div class="is-flex is-flex-wrap-wrap is-justify-content-space-around">
 
     {% if bird_data != None %}
     {% for row in bird_data %}

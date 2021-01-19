@@ -11,7 +11,9 @@ from birdnet.utils import save_profile_photo, save_thread_photo, save_reply_phot
 # ------------------------------------ HOME & ABOUT PAGES ------------------------------------
 @app.route("/")
 def index():
-    return render_template('index.html')
+    random_bird = BirdDetails.query.order_by(func.random()).first()
+    return render_template('index.html', bird = random_bird)
+
 
 @app.route("/about/")
 def about():

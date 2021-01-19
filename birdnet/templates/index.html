@@ -75,23 +75,23 @@
     
     <!-- BIRD OF THE DAY -->
     <br>
-    <h1 class="heading-font is-size-2 mx-5">Bird of the day</h1>
-
+    <h1 class="heading-font is-size-2 mx-5"> Have a look at this bird</h1>
+  
+    {% if bird %}
     <section class="columns mx-3 my-1">
         <figure class="column m-3 is-one-third">
-            <img class="round-1" src="images/myna.jpg">
+            <img class="round-1" src="{{'\\birdsearch_collection\\'+ bird.image_path}}">
         </figure>
         <div class="column m-3">
-            <h3 class="heading-font is-size-3">Common Myna</h3>
-            <p class="body-font is-size-5">Scientific Name: Acridotheres Tristis</p>
+            <h3 class="heading-font is-size-3">{{bird.bird_name}}</h3>
+            <p class="body-font is-size-5">Scientific Name: {{bird.scientific_name}}</p>
             <br><br>
             <p class="body-font">
-                The common myna or Indian myna, sometimes spelled mynah, is a member of the family Sturnidae (starlings and mynas) native to Asia. An omnivorous open woodland bird with a strong territorial instinct, the common myna has adapted extremely well to urban environments. 
-                <br><br>
-                The range of the common myna  is increasing at such a rapid rate that in 2000 the IUCN Species Survival Commission declared it one of the world's most invasive species and one of only three birds listed among "100 of the World's Worst Invasive Species" that pose a threat to biodiversity, agriculture and human interests. 
+             {{bird.description}}
             </p>
         </div>
     </section>
+    {% endif %}
     <br/><br/>
 
     <script src="/js/carousel.js"> </script>
