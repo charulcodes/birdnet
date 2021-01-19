@@ -1,4 +1,68 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1 class="title is-size-1 m-6">Python is a programming language</h1>
+<main class="columns m-4">
+    <section class="column is-half p-3">
+        <div class="card is-flex is-flex-direction-column p-5 round-1">
+            <h1 class="heading-font is-size-3 has-text-centered mt-2">Photo Bird Identfication</h1>
+
+            <form class="mt-3" action="?" method="POST" enctype="multipart/form-data">
+                <label class="label">Upload image:</label>
+
+                <div id="bird-image-upload" class="file my-3">
+                    <label class="file-label">
+                        <input class="file-input mb-5 body-font" type="file" name="bird-image" accept="image/png, image/jpeg, image/jpg">
+                        <span class="file-cta">
+                            <span class="file-label heading-font"> 
+                                <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
+                                Add Image
+                            </span>
+                        </span>
+                        <span class="file-name">
+                            No file chosen
+                        </span>
+                    </label>
+                </div> 
+                
+                <figure class="image mx-6 mt-4">
+                    <img class="round-1" src="/images/myna.jpg">
+                </figure>
+    
+                <input class="input button round-1 yellow-bg spaced-font my-5" type="submit" value="IDENTIFY">
+            </form>
+
+        </div>
+    </section>
+
+    <section class="column is-half p-3">
+        <div class="card p-5 round-2">
+            <div class="is-flex is-justify-content-center my-3">
+                <img class="image is-48x48" src="/assets/birdid_results.png">
+                <h2 class="heading-font is-size-3 spaced-font mb-3 has-text-black">RESULTS</h2>
+            </div>
+
+            <h3 class="ml-5 is-size-5">Probable Species:</h3>
+
+            <div class="ml-5 my-5">
+                <p class="heading-font has-text-black is-size-4">
+                    87% Common Myna
+                </p>
+                <p class="is-size-5">Acridotheres tristis</p>
+            </div>
+
+            <div class="ml-5 my-5">
+                <p class="heading-font has-text-black is-size-4">
+                    7% House Sparrow
+                </p>
+                <p class="is-size-5">Passer Domesticus</p>
+            </div>
+
+            <div class="ml-5 my-5">
+                <p class="heading-font has-text-black is-size-4">
+                    6% Cuckoo
+                </p>
+                <p class="is-size-5">Cuculidae</p>
+            </div>  
+        </div>
+    </section>
+</main>
 {% endblock %}

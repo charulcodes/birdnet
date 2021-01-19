@@ -7,18 +7,15 @@ from birdnet import app, bcrypt
 from birdnet.validations import validate_new_user, validate_details_for_updation, validate_password, validate_new_thread, validate_thread_for_updation, validate_reply_for_updation, validate_description_for_bird_details
 from birdnet.utils import save_profile_photo, save_thread_photo, save_reply_photo, save_bird_photo
 
-
 # ------------------------------------ HOME & ABOUT PAGES ------------------------------------
 @app.route("/")
 def index():
     random_bird = BirdDetails.query.order_by(func.random()).first()
     return render_template('index.html', bird = random_bird)
 
-
 @app.route("/about/")
 def about():
     return render_template('about.html')
-
 
 # ------------------------------------ TOOLS ------------------------------------
 @app.route("/birdid/")
