@@ -161,7 +161,7 @@ def register():
 
 # Login and Register pages 
 @app.route("/login/", methods=['GET', 'POST'])
-def login(delete_param = None):
+def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -171,18 +171,13 @@ def login(delete_param = None):
             session['username'] = user.username
             session['profile-photo'] = user.profile_photo_path
             session['is-admin'] = user.is_admin
-            if delete_param == True:
-                return redirect(url_for('delete_account'))
-            else:
-                return redirect(url_for('profile', username_param = username))
+            return redirect(url_for('profile', username_param = username))
         elif user and password != user.password:
             return render_template('login.html', title='Login', login="incorrect_password")
         else:
             return render_template('login.html', title='Login', login="unsuccessful")
     elif request.method == "GET":
-        if ("username" in session) and delete_param == True:
-            return render_template('login.html', title='Login', delete_param = True) 
-        elif "username" in session:
+        if "username" in session:
             return redirect(url_for('profile', username_param = session['username']))
         return render_template('login.html', title='Login')
 
@@ -275,11 +270,10 @@ def password_reset():
 @app.route("/delete_account/", methods=['GET', 'POST'])
 def delete_account(relogin = None):
     if request.method == 'POST':
-        if relogin == True:
-            return render_template('delete_account.html', status = "successful")
+        # deletion code here :(
     elif request.method == 'GET':
         if "username" in session:
-            return login(delete_param = True)
+            # render Deletion page 
         elif relogin == True:
             return render_template('delete_account.html') 
         else:
@@ -323,11 +317,11 @@ def superadmin_panel():
                 abort(404)
             
 
-
 # ------------------------------------ FORUM ------------------------------------
 @app.route("/forum/", methods=['GET', 'POST'])
 def forum():
-    popular_threads = Thread.query.order_by(Thread.view_count).limit(7).all()
+    popular_threads = Thread.query.order_by(Thread.view_count.desc()).limit(7).all()
+    new_threads = Thread.query.order_by(Thread.creation_date.desc()).limit(5).all()
     if request.method == 'POST':
         title = request.form["thread-title"].strip()
         caption = request.form["thread-caption"].strip()
@@ -343,13 +337,11 @@ def forum():
             thread = Thread(username=username, title=title, caption=caption, image_path=filename, view_count=0)
             db.session.add(thread)
             db.session.commit()
-            new_threads = Thread.query.order_by(Thread.creation_date.desc()).all()
+            new_threads = Thread.query.order_by(Thread.creation_date.desc()).limit(5).all()
             return render_template('forum.html', title='Forum', status="successful", new_threads = new_threads)
         else:
-            new_threads = Thread.query.all()
             return render_template('forum.html', title='Forum', status="unsuccessful", errors= errors, new_threads = new_threads, popular_threads=popular_threads)
     elif request.method == 'GET':
-        new_threads = Thread.query.order_by(Thread.creation_date.desc()).all()
         return render_template('forum.html', title='Forum', new_threads = new_threads, popular_threads=popular_threads)
 
 # Thread
@@ -391,7 +383,7 @@ def thread(thread_id):
             thread_id = int(request.form["thread-id"])
             is_delete_image = request.form.get("delete-image")
                 
-            thread = Thread.query.get(reply_id)
+            thread = Thread.query.get(thread_id)
             errors, thread = validate_thread_for_updation(thread, thread_title, thread_caption)
 
             if is_delete_image:
@@ -457,9 +449,11 @@ def thread(thread_id):
     elif request.method == 'GET':
         return render_template('thread.html', thread = thread, replies = replies)
 
-@app.route("/forum/threads/", methods=['GET', 'POST'])   
+@app.route("/forum/threads/", methods=['GET'])   
 def all_threads():
-    pass 
+    page = request.args.get('page', 1, type=int)
+    threads = Thread.query.order_by(Thread.creation_date.desc()).paginate(per_page=5)
+    return render_template('all_threads.html', threads = threads)
 
 # Search for a forum post
 @app.route("/forum/search/", methods=['GET', 'POST'])

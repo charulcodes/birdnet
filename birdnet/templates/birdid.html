@@ -22,12 +22,13 @@
                         </span>
                     </label>
                 </div> 
-                
-                <figure class="image mx-6 mt-4">
-                    <img class="round-1" src="/images/myna.jpg">
-                </figure>
     
                 <input class="input button round-1 yellow-bg spaced-font my-5" type="submit" value="IDENTIFY">
+
+                <i><p>Image Preview:</p></i>
+                <figure class="image mx-6 mt-4" style="width: 350px;">
+                    <img id="image-upload-preview" class="round-1" src="">
+                </figure>
             </form>
 
         </div>
@@ -65,4 +66,21 @@
         </div>
     </section>
 </main>
+
+<script>
+    const fileInput = document.querySelector('#bird-image-upload input[type=file]');
+    
+    fileInput.onchange = () => {
+        if (fileInput.files.length > 0) {
+        const fileName = document.querySelector('#bird-image-upload .file-name');
+            fileName.textContent = fileInput.files[0].name;
+        }
+        var reader = new FileReader();
+        reader.onload = function(){
+                var output = document.getElementById('image-upload-preview');
+                output.src = reader.result;
+            };
+        reader.readAsDataURL(fileInput.files[0]);
+    }
+</script>
 {% endblock %}

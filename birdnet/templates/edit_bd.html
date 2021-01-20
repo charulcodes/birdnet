@@ -61,6 +61,11 @@
                 </label>
             </div> 
 
+            <i><p>Image Preview:</p></i>
+            <figure style="width: 150px;">
+                <img class="m-2" id="image-upload-preview" src=""> 
+            </figure>
+            
             <input class="input button round-1 yellow-bg spaced-font" type="submit" value="SUBMIT">
         </form>
 
@@ -72,11 +77,17 @@
 
 <script>
 const fileInput = document.querySelector('#bird-image-upload input[type=file]');
-fileInput.onchange = () => {
-if (fileInput.files.length > 0) {
-const fileName = document.querySelector('#bird-image-upload .file-name');
-    fileName.textContent = fileInput.files[0].name;
-}
-}
+    fileInput.onchange = () => {
+        if (fileInput.files.length > 0) {
+        const fileName = document.querySelector('#bird-image-upload .file-name');
+            fileName.textContent = fileInput.files[0].name;
+        }
+        var reader = new FileReader();
+        reader.onload = function(){
+                var output = document.getElementById('image-upload-preview');
+                output.src = reader.result;
+            };
+        reader.readAsDataURL(fileInput.files[0]);
+    }
 </script>
 {% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="columns my-4">
+
+    <div class="column is-one-fifth" ></div>
+
+    <section class="column mx-3"> 
+        {% for thread in threads.items %}
+        <div class="card p-3 round-1 mb-5">
+            <div class="media">
+                
+                <div class="media-left">
+                    <figure class="image is-48x48">
+                        <img class="is-rounded" src="{{ '/profile_photos/' + thread.creator.profile_photo_path }}"> 
+                    </figure>
+                </div>
+                <div class="media-content">
+                    <p class=""> 
+                        By <a href="{{ '/profile/' + thread.username}}">{{ thread.username }}</a> 
+                        at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} </p>
+                    <a class="heading-font is-size-4" href= "{{ '/forum/thread/{}'.format(thread.thread_id) }}" > {{ thread.title }} </a>
+                </div>
+            </div>
+
+            <div class="columns">
+                {% if thread.image_path != None %}
+                <div class="column is-one-third">
+                    <figure class="image">
+                        <img class="round-1" src="{{ '\\thread\\' + thread.image_path }}"> 
+                    </figure>
+                </div>
+                {% endif %}
+
+                <div class="column">
+                    <p class="">{{ thread.caption }}</p>    
+                </div>
+            </div>
+            <footer class="card-footer">
+                {% if 'username' in session %}
+                <a href="{{ '/forum/thread/{}'.format(thread.thread_id) }}" class="card-footer-item">Reply</a>
+                {% endif %}
+                <a href="#" class="card-footer-item"> {{ thread.view_count }} views</a>
+            </footer>
+        </div>
+        {% endfor %}
+
+        <div class="is-flex">
+        {% for page_num in threads.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                {% if threads.page == page_num %}
+                    <a class="button dark-blue-bg has-text-white mx-1" href="/forum/threads/?page={{ page_num }}">{{ page_num }}</a>
+                {% else %}
+                    <a class="button light-blue-bg mx-1" href="/forum/threads/?page={{ page_num }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
+        </div>
+
+    </section>
+
+    <div class="column is-one-fifth"></div>
+
+</div>
+{% endblock %}

@@ -36,51 +36,59 @@
        
    </section>
 
-   <!-- RECENT POSTS -->
-   <section class="column m-5 ">    
+   <!-- RECENT THREADS -->
+   <section class="column m-5 is-flex is-flex-direction-column is-justify-content-center">    
        {% if session['username'] %}
-       <h2 class="heading-font is-size-3 my-5 ">Create a new thread</h2>
+       <h2 class="heading-font is-size-3 mb-5 ">Create a new thread</h2>
 
        <form action="/forum/" method="POST" enctype="multipart/form-data">
-       <div class="card columns p-3 round-1 mb-5">
-            <div class="column is-three-quarters">
+       <div class="card columns p-2 round-1 mb-5">
+            <div class="column is-three-fifths">
                 <input class="input input-shadow mb-2 heading-font" type="text" name="thread-title" placeholder="Add thread title" required/> 
                 {% if errors %}
                     {% if errors["title"] %}
                         <p class="mt-1 mb-4 n has-text-danger"> {{ errors['title'] }} </p>
                     {% endif %}
                 {% endif %}  
-                <textarea class="textarea input-shadow heading-font" name="thread-caption" placeholder="Write something here" required></textarea>
+                <textarea class="textarea input-shadow body-font" name="thread-caption" placeholder="Write something here" required></textarea>
                 {% if errors %}
                     {% if errors["caption"] %}
                         <p class="mt-2 mb-4 n has-text-danger"> {{ errors['caption'] }} </p>
                     {% endif %}
                 {% endif %}  
             </div>
-            <div class="column is-one-quarter is-flex is-flex-direction-column is-justify-content-flex-end">
+            <div class="column is-two-fifths is-flex is-flex-direction-column is-align-content-center">
 
-                <div id="image-upload-preview"></div>
-
-                <div id="post-image-upload" class="file mb-3">
+                <div id="add-thread-image-upload" class="file mb-3">
                     <label class="file-label">
                         <input class="file-input mb-5 body-font" type="file" name="thread-image" accept="image/png, image/jpeg, image/jpg">
                         <span class="file-cta">
                             <span class="file-label heading-font"> 
-                                <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
+                                <img class="image is-24x24 mr-1" src="/assets/forum_add_images.png">
                                 Add Images 
                             </span>
+                        </span>
+                        <span class="file-name">
+                            No file chosen
                         </span>
                     </label>
                 </div> 
                 
-                <input class="button yellow-bg spaced-font" type="submit" value="POST">
+                <input class="button yellow-bg spaced-font mb-2" type="submit" value="POST">
+
+                <i><p>Image Preview:</p></i>
+                <figure style="width: 150px;">
+                    <img class="m-2" id="image-upload-preview" src=""> 
+                </figure>
+
             </div>
        </div>
        </form>
 
        {% endif %}
 
-       <h2 class="heading-font is-size-3 my-5 ">New Discussions</h2>
+       <h2 class="heading-font is-size-3 mt-5">New Discussions</h2>
+       <a class="link mb-5 is-size-6" href="/forum/threads">View all threads</a>
 
     {% if new_threads == None %}
     <div class="is-flex is-flex-direction-column">
@@ -110,7 +118,7 @@
 
             <div class="columns">
                 {% if thread.image_path != None %}
-                <div class="column is-one-third">
+                <div class="column is-one-quarter">
                     <figure class="image">
                         <img class="round-1" src="{{ '\\thread\\' + thread.image_path }}"> 
                     </figure>
@@ -130,8 +138,27 @@
         </div>
     {% endfor %}
 
+    <a class="button dark-blue-bg has-text-white" href="/forum/threads/">View all threads</a>
+
    </section>
 
 </main>
+
+<script>
+    const fileInput = document.querySelector('#add-thread-image-upload input[type=file]');
+    
+    fileInput.onchange = () => {
+        if (fileInput.files.length > 0) {
+        const fileName = document.querySelector('#add-thread-image-upload .file-name');
+            fileName.textContent = fileInput.files[0].name;
+        }
+        var reader = new FileReader();
+        reader.onload = function(){
+                var output = document.getElementById('image-upload-preview');
+                output.src = reader.result;
+            };
+        reader.readAsDataURL(fileInput.files[0]);
+    }
+</script>
 
 {% endblock %}

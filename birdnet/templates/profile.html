@@ -212,9 +212,13 @@
                             </span>
                         </label>
                     </div>
-                </div>
-                
 
+                    <i><p>Image Preview:</p></i>
+                    <figure style="width: 150px;">
+                        <img class="m-2" id="image-upload-preview" src="{{ '/profile_photos/' + user.profile_photo_path }}"> 
+                    </figure>
+                </div>
+            
                 <div class="mb-5">
                     <label class="label">Enter your bio:</label>
                     <textarea class="textarea input-shadow" name="bio" placeholder="Enter something about you">{{ user["bio"] }}</textarea>
@@ -266,7 +270,14 @@
         const fileName = document.querySelector('#profile-photo-upload .file-name');
             fileName.textContent = fileInput.files[0].name;
         }
+        var reader = new FileReader();
+        reader.onload = function(){
+                var output = document.getElementById('image-upload-preview');
+                output.src = reader.result;
+            };
+        reader.readAsDataURL(fileInput.files[0]);
     }
 </script>
+
 
 {% endblock %}
