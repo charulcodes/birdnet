@@ -39,8 +39,11 @@
              </div>
              <div class="media-content">
                  <p class=""> 
-                     By <a href="{{ '/profile/' + thread.username}}">{{ thread.username }}</a> 
-                     at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} </p>
+                     By &nbsp;<a href="{{ '/profile/' + thread.username}}">{{ thread.username }}</a> 
+                     {% if thread.creator.is_admin == True %}
+                            <img class="image is-24x24" src="/assets/admin_badge.png">
+                     {% endif %}
+                     &nbsp; at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} </p>
                  <a class="heading-font is-size-4" href= "{{ '/forum/thread/{}'.format(thread.thread_id) }}" > {{ thread.title }} </a>
              </div>
          </div>
@@ -77,8 +80,11 @@
             </div>
             <div class="media-content">
                 <p class="mb-2">
-                    By <a href="{{ '/profile/' + reply.username }}">{{ reply.username }}</a> 
-                            at {{ reply.creation_date.strftime('%H:%M, %d %B, %Y') }} 
+                    By &nbsp;<a href="{{ '/profile/' + reply.username }}">{{ reply.username }}</a> 
+                    {% if reply.creator.is_admin == True %}
+                            <img class="image is-24x24" src="/assets/admin_badge.png">
+                    {% endif %}
+                    &nbsp;at {{ reply.creation_date.strftime('%H:%M, %d %B, %Y') }} 
                 </p>
             </div>
         </div>

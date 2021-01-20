@@ -14,8 +14,8 @@ class User(db.Model):
     signup_date = db.Column(db.DateTime, default=datetime.utcnow)
     is_admin = db.Column(db.Boolean, default=False)
 
-    threads = db.relationship('Thread', backref="creator", lazy=True)
-    replies = db.relationship('Reply', backref="creator", lazy=True)
+    threads = db.relationship('Thread', backref="creator", cascade="all, delete-orphan", lazy=True)
+    replies = db.relationship('Reply', backref="creator", cascade="all, delete-orphan", lazy=True)
 
     def __repr__():
         return f"User('{self.username}','{self.email}','{self.signup_date}')"

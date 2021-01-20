@@ -268,13 +268,25 @@ def password_reset():
             abort(404)
 
 @app.route("/delete_account/", methods=['GET', 'POST'])
-def delete_account(relogin = None):
+def delete_account():
     if request.method == 'POST':
-        # deletion code here :(
+        if "username" in session:
+            username = request.form["username"]
+            password = request.form["password"]
+            retyped_password = request.form["retype-password"]
+            if username == session['username'] and password == retyped_password:
+                user = User.query.filter_by(username = username).first()
+                if user and bcrypt.check_password_hash(user.password, password):
+                    db.session.delete(user)
+                    db.session.commit()
+                    session.clear()
+                    return render_template('delete_account.html', deletion=True)
+                else:
+                    return render_template('delete_account.html', errors=True)  
+            else:
+                return render_template('delete_account.html', errors=True)   
     elif request.method == 'GET':
         if "username" in session:
-            # render Deletion page 
-        elif relogin == True:
             return render_template('delete_account.html') 
         else:
             abort(404)

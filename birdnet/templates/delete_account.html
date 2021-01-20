@@ -1,44 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
+{% if deletion == True %}
+  <h1 class="heading-font is-size-3 has-text-black mx-2 mb-3 has-text-centered">We're sorry to see you go :(</h1>
+  <p>Your account has been deleted.</p>
+{% else %}
 <div id="container">
 <div class="is-flex is-flex-direction-column is-align-items-center is-justify-content-center">  
 
 <div class="login-card">
-        <section class="card p-6 m-4">
-            <h1 class="heading-font is-size-3 has-text-black mx-2 mb-6 has-text-centered">Delete Accout</h1>
+        <section class="card p-5 m-4">
+            <h1 class="heading-font is-size-3 has-text-black mx-2 mb-3 has-text-centered">Delete Account</h1>
             <p>
                 Please reconsider before deleting your account. This action CANNOT be undone. 
                 Your profile and personal data will be deleted, but your posts and comments will NOT be deleted.
             </p>
-            <form class="my-2" action="" method="POST">
-                <label class="label">Please retype your username:</label>
-                <input class="input input-shadow" type="text" name="username" required/> <br/><br/>
-                <label class="label">Password:</label>
-                <input class="input input-shadow" type="password" name="password" required/>  <br/><br/><br/>
+            {% if errors %}
+            <br><br>
+            <span class="notification is-danger my-5">
+              Incorrect username or password. Please try again.
+            </span>
+            <br><br>
+            {% endif %}
+            <form class="my-2" action="" method="POST" onsubmit="return confirm('Do really want to delete your account? \nClick OK to proceed.')">
+                <label class="label mt-4">Please retype your username:</label>
+                <input class="input input-shadow" type="text" name="username" required/>
+                <label class="label mt-4">Please enter your password:</label>
+                <input class="input input-shadow" type="password" name="password" required/>
+                <label class="label mt-4">Please re-enter your password:</label>
+                <input class="input input-shadow" type="password" name="retype-password" required/>
 
-                <input class="input button round-1 yellow-bg spaced-font" type="submit" value="DELETE ACCOUNT">
+                <input class="input button round-1 is-danger spaced-font mt-6" type="submit" value="DELETE ACCOUNT">
             </form>
-            <!-- <p class="mt-6 has-text-centered">Don't have an account? <a href="/register">Register here</a> </p> -->
+        
         </section>
-        </div>
+</div>
 
 </div>
 </div>
-
-<!-- <div id="deletionModal" class="modal">
-    <div class="modal-background"></div>
-    <div class="modal-card">
-      <header class="modal-card-head">
-        <p class="modal-card-title heading-font">Confirm Account Deletion?</p>
-      </header>
-      <section class="modal-card-body">
-        <p class="subitle">Are you sure you want to logout? </p>
-      </section>
-      <footer class="modal-card-foot">
-        <a class="button is-success" href="/logout">Yes</a>
-        <a class="button" href="javascript:logoutConfirmation('logoutModal');">Cancel</a>
-      </footer>
-    </div>
-</div> -->
+{% endif %}
 
 {% endblock %} 

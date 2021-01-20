@@ -50,7 +50,12 @@
                         <img class="is-rounded ml-2" src={{ "\\profile_photos\\" + session["profile-photo"] }} >
                     </figure>
                     <div class="navbar-item">
-                        <a class="button has-background-light has-text-black" href="{{ '/profile/' + session['username']}}"> {{ session["username"] }} </a>
+                        <a class="button has-background-light has-text-black is-flex is-align-items-center" href="{{ '/profile/' + session['username']}}"> 
+                            {{ session["username"] }} 
+                            {% if session["is-admin"] == True %}
+                                <img class="mx-1 image is-24x24" src="/assets/admin_badge.png">
+                            {% endif %}
+                        </a>
                     </div>  
                     <div class="navbar-item">
                         <a class="button has-background-info has-text-white" href="javascript:launchModal('logoutModal');"> Logout </a>

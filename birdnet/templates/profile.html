@@ -34,7 +34,12 @@
                 </figure>
             </div>
             <h1 class="heading-font has-text-centered is-size-2"> {{ user.firstname + " " +  user.lastname }} </h1>
-            <h2 class="heading-font has-text-centered is-size-3 mb-3">@{{ user.username }}</h2>
+            <h2 class="heading-font has-text-centered is-size-3 mb-3 is-flex is-align-items-center is-justify-content-center">
+                @{{ user.username }}
+                {% if user.is_admin == True %}
+                    <img class="image is-48x48" src="/assets/admin_badge.png">
+                {% endif %}
+            </h2>
 
             <div class="is-flex is-justify-content-center is-align-items-center mb-3">
                 <img class="image is-32x32" src="/assets/profile_joined.png">
@@ -100,9 +105,12 @@
                      </figure>
                  </div>
                  <div class="media-content">
-                     <p>
-                        By <a href="{{ '/profile/' + thread.username}}">{{ thread.username }}</a> 
-                        at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} 
+                     <p class="is-flex is-align-items-center">
+                        By &nbsp;<a href="{{ '/profile/' + thread.username}}">{{ thread.username }}</a> 
+                        {% if thread.creator.is_admin == True %}
+                            <img class="image is-24x24" src="/assets/admin_badge.png">
+                        {% endif %}
+                        &nbsp;at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} 
                     </p>
                     <a href= "{{ '/forum/thread/{}'.format(thread.thread_id) }}" class="heading-font is-size-4 mb-3 has-text-black">
                         {{ thread.title }}

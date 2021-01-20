@@ -69,9 +69,12 @@
                 </figure>
             </div>
             <div class="media-content">
-                <p class="mb-2">
-                    By <a href="{{ '/profile/' + thread.username }}">{{ thread.username }}</a> 
-                        at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} </p> 
+                <p class="is-flex is-align-items-center">
+                    By &nbsp;<a href="{{ '/profile/' + thread.username}}">{{ thread.username }}</a> 
+                    {% if thread.creator.is_admin == True %}
+                        <img class="image is-24x24" src="/assets/admin_badge.png">
+                    {% endif %}
+                    &nbsp;at {{ thread.creation_date.strftime('%H:%M, %d %B, %Y') }} 
                 </p>
                 <h2 class="heading-font is-size-4 mb-3">{{ thread.title }}</h2>
             </div>
@@ -279,9 +282,12 @@
                 </figure>
             </div>
             <div class="media-content">
-                <p class="mb-2">
-                    By <a href="{{ '/profile/' + reply.username }}">{{ reply.username }}</a> 
-                            at {{ reply.creation_date.strftime('%H:%M, %d %B, %Y') }} 
+                <p class="is-flex is-align-items-center">
+                    By &nbsp;<a href="{{ '/profile/' + reply.username}}">{{ reply.username }}</a> 
+                    {% if reply.creator.is_admin == True %}
+                        <img class="image is-24x24" src="/assets/admin_badge.png">
+                    {% endif %}
+                    &nbsp;at {{ reply.creation_date.strftime('%H:%M, %d %B, %Y') }} 
                 </p>
             </div>
             {% if reply.username == session['username'] %}
@@ -339,8 +345,8 @@
                     </label>
 
                     <div class="file my-3">
-                        <label id="edit-reply-image-upload" class="file-label">
-                            <input class="file-input mb-5 body-font" type="file" name="reply-image" accept="image/png, image/jpeg, image/jpg">
+                        <label id="edit-reply-image-upload-{{ reply.reply_id }}" class="file-label">
+                            <input id="{{ reply.reply_id }}" class="file-input mb-5 body-font" type="file" name="reply-image" accept="image/png, image/jpeg, image/jpg">
                             <span class="file-cta">
                                 <span class="file-label heading-font"> 
                                     <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
@@ -355,7 +361,7 @@
 
                     <i><p>New image preview:</p></i>
                     <figure style="width: 150px;">
-                        <img class="m-2" id="edit-reply-image-preview" src=""> 
+                        <img class="m-2" id="edit-reply-image-preview-{{ reply.reply_id }}" src=""> 
                     </figure>
                     
                     <input class="button yellow-bg spaced-font" type="submit" value="SAVE CHANGES">
@@ -410,8 +416,10 @@
 <script>
     const editThreadImageInput = document.querySelector('#edit-thread-image-upload input[type=file]');
     const addReplyImageInput = document.querySelector('#add-reply-image-upload input[type=file]');
-    const editReplyImageInput = document.querySelector('#edit-reply-image-upload input[type=file]');
     
+    const editReplyInputs = document.querySelectorAll('[id^="edit-reply-image-upload"]');
+
+
     editThreadImageInput.onchange = () => {
         if (editThreadImageInput.files.length > 0) {
         const fileName = document.querySelector('#edit-thread-image-upload .file-name');
@@ -438,18 +446,23 @@
         reader.readAsDataURL(addReplyImageInput.files[0]);
     }
 
-    editReplyImageInput.onchange = () => {
-        if (editReplyImageInput.files.length > 0) {
-        const fileName = document.querySelector('#edit-reply-image-upload .file-name');
-            fileName.textContent = editReplyImageInput.files[0].name;
+    for(var i=0; i < editReplyInputs.length; i++)  
+    {
+        const imageInput = document.querySelector('#'+ editReplyInputs[i].id + " input[type=file]")
+
+        imageInput.onchange = () => {
+        if (imageInput.files.length > 0) {
+            const fileName = document.querySelector('#edit-reply-image-upload-' + imageInput.id + ' .file-name');
+            fileName.textContent = imageInput.files[0].name;
         }
         var reader = new FileReader();
         reader.onload = function(){
-                var output = document.getElementById('edit-reply-image-preview');
+                var output = document.getElementById('edit-reply-image-preview-' + imageInput.id);
                 output.src = reader.result;
             };
-        reader.readAsDataURL(editReplyImageInput.files[0]);
-    }
+        reader.readAsDataURL(imageInput.files[0]);
+        }
+    } 
 
 </script>
 {% endblock %}
