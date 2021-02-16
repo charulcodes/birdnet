@@ -27,7 +27,11 @@
 
                 <i><p>Image Preview:</p></i>
                 <figure class="image mx-6 mt-4" style="width: 350px;">
+                    {% if is_image_posted  %}
+                    <img id="image-upload-preview" src="data:image/jpeg;base64,{{ imgString }}">
+                    {% else %}
                     <img id="image-upload-preview" class="round-1" src="">
+                    {% endif %}
                 </figure>
             </form>
 

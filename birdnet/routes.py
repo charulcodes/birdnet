@@ -2,7 +2,7 @@ from flask import render_template, session, request, redirect, url_for, abort
 from datetime import datetime
 from sqlalchemy import or_, func
 from PIL import Image
-import os, io
+import os, io, base64
 
 from tensorflow import keras
 from tensorflow.keras.models import Sequential, load_model
@@ -35,9 +35,16 @@ def birdid():
         opened_image = Image.open(image)
         processed_image = preprocess_image(opened_image, target_size=(224, 224))
 
+        output = io.BytesIO()
+        # im = Image.open("test.png") # Your image here!
+        opened_image.save(output, format='JPEG')
+        output.seek(0)
+        output_s = output.read()
+        b64 = base64.b64encode(output_s).decode('ascii')
+
         predictions = birdid_model.predict(processed_image).tolist()
         prediction_dict = process_predictions(predictions)
-        return render_template('birdid.html', title='Bird Identification', predictions = prediction_dict)
+        return render_template('birdid.html', title='Bird Identification', predictions = prediction_dict, is_image_posted = True, imgString=b64)
     elif request.method == "GET":
         return render_template('birdid.html', title='Bird Identification')
 
