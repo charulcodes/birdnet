@@ -413,12 +413,9 @@
 </div>
 </div>
 
+
 <script>
     const editThreadImageInput = document.querySelector('#edit-thread-image-upload input[type=file]');
-    const addReplyImageInput = document.querySelector('#add-reply-image-upload input[type=file]');
-    
-    const editReplyInputs = document.querySelectorAll('[id^="edit-reply-image-upload"]');
-
 
     editThreadImageInput.onchange = () => {
         if (editThreadImageInput.files.length > 0) {
@@ -432,6 +429,11 @@
             };
         reader.readAsDataURL(editThreadImageInput.files[0]);
     }
+</script>
+
+
+<script>
+    const addReplyImageInput = document.querySelector('#add-reply-image-upload input[type=file]');
 
     addReplyImageInput.onchange = () => {
         if (addReplyImageInput.files.length > 0) {
@@ -445,6 +447,10 @@
             };
         reader.readAsDataURL(addReplyImageInput.files[0]);
     }
+</script>
+
+<script>
+    const editReplyInputs = document.querySelectorAll('[id^="edit-reply-image-upload"]');
 
     for(var i=0; i < editReplyInputs.length; i++)  
     {

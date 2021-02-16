@@ -3,6 +3,9 @@ import os
 from datetime import datetime
 from birdnet import app
 from random import randrange
+import numpy as np
+
+from tensorflow.keras.preprocessing.image import ImageDataGenerator, img_to_array
 
 def save_profile_photo(user, photo):
     file_name, file_ext = os.path.splitext(photo.filename)
@@ -55,3 +58,39 @@ def save_bird_photo(photo):
     i.save(photo_path)
 
     return photo_fn
+
+def preprocess_image(image, target_size):
+    if image.mode != "RGB":
+        image = image.convert("RGB")
+    image = image.resize(target_size)
+    image = img_to_array(image)
+    image = np.expand_dims(image, axis=0)
+    return image
+
+def process_predictions(predictions):
+    class_dict = {
+    0:"ANNAS HUMMINGBIRD",
+    1:"ANTBIRD",
+    2:"BALD EAGLE",
+    3:"BARN OWL",
+    4:"BARN SWALLOW",
+    5:"BELTED KINGFISHER",
+    6:"BLACK SWAN",
+    7:"DOWNY WOODPECKER",
+    8:"EMPEROR PENGUIN",
+    9:"OSTRICH",
+    10:"PEACOCK",
+    11:"TRUMPTER SWAN"
+    }
+
+    processed_dict = {}
+
+    p = predictions[0]
+
+    for n in range(0,12):
+        if round(p[n], 5) > 0:
+            predicted_index = n
+            processed_dict[p[n]] = (class_dict[predicted_index]).capitalize()
+
+    return processed_dict
+    

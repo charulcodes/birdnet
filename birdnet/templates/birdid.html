@@ -43,26 +43,17 @@
 
             <h3 class="ml-5 is-size-5">Probable Species:</h3>
 
+            {% if predictions %}
+            {% for percent, name in predictions.items() %}
             <div class="ml-5 my-5">
                 <p class="heading-font has-text-black is-size-4">
-                    87% Common Myna
+                    {{ percent }}% {{ name }}
                 </p>
                 <p class="is-size-5">Acridotheres tristis</p>
             </div>
-
-            <div class="ml-5 my-5">
-                <p class="heading-font has-text-black is-size-4">
-                    7% House Sparrow
-                </p>
-                <p class="is-size-5">Passer Domesticus</p>
-            </div>
-
-            <div class="ml-5 my-5">
-                <p class="heading-font has-text-black is-size-4">
-                    6% Cuckoo
-                </p>
-                <p class="is-size-5">Cuculidae</p>
-            </div>  
+            {% endfor %}
+            {% endif %}
+  
         </div>
     </section>
 </main>

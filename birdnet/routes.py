@@ -1,11 +1,18 @@
 from flask import render_template, session, request, redirect, url_for, abort
 from datetime import datetime
 from sqlalchemy import or_, func
+from PIL import Image
+import os, io
+
+from tensorflow import keras
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.image import ImageDataGenerator, img_to_array
 
 from birdnet.models import User, Thread, Reply, BirdDetails, db
 from birdnet import app, bcrypt
 from birdnet.validations import validate_new_user, validate_details_for_updation, validate_password, validate_new_thread, validate_thread_for_updation, validate_reply_for_updation, validate_description_for_bird_details
-from birdnet.utils import save_profile_photo, save_thread_photo, save_reply_photo, save_bird_photo
+from birdnet.utils import save_profile_photo, save_thread_photo, save_reply_photo, save_bird_photo, preprocess_image, process_predictions
 
 # ------------------------------------ HOME & ABOUT PAGES ------------------------------------
 @app.route("/")
@@ -18,9 +25,21 @@ def about():
     return render_template('about.html')
 
 # ------------------------------------ TOOLS ------------------------------------
-@app.route("/birdid/")
+@app.route("/birdid/", methods=['GET', 'POST'])
 def birdid():
-    return render_template('birdid.html', title='Bird Identification')
+    if request.method == "POST":
+        image = None
+        if request.files['bird-image']:
+            image = request.files['bird-image']
+        model = load_model(os.path.join(os.getcwd(), 'birdnet', '12_birds_model_v4'))
+        opened_image = Image.open(image)
+        processed_image = preprocess_image(opened_image, target_size=(224, 224))
+
+        predictions = model.predict(processed_image).tolist()
+        prediction_dict = process_predictions(predictions)
+        return render_template('birdid.html', title='Bird Identification', predictions = prediction_dict)
+    elif request.method == "GET":
+        return render_template('birdid.html', title='Bird Identification')
 
 @app.route("/search/", methods=['GET','POST'])
 def search():
