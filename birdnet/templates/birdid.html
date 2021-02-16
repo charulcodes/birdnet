@@ -44,12 +44,12 @@
             <h3 class="ml-5 is-size-5">Probable Species:</h3>
 
             {% if predictions %}
-            {% for percent, name in predictions.items() %}
+            {% for p in predictions %}
             <div class="ml-5 my-5">
                 <p class="heading-font has-text-black is-size-4">
-                    {{ percent }}% {{ name }}
+                    {{ p[0] }}% {{ p[1] }}
                 </p>
-                <p class="is-size-5">Acridotheres tristis</p>
+                <!-- <p class="is-size-5">Acridotheres tristis</p> -->
             </div>
             {% endfor %}
             {% endif %}
