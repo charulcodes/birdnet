@@ -50,4 +50,4 @@ class BirdDetails(db.Model):
     bird_name = db.Column(db.String(50), nullable=False)
     scientific_name = db.Column(db.String(75), nullable=False)
     image_path = db.Column(db.String(200))
-    description = db.Column(db.String(300), nullable=False)
+    description = db.Column(db.String(600), nullable=False)

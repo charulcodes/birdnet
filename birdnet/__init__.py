@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost/bi
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-birdid_model = load_model(os.path.join(os.getcwd(), 'birdnet', '12_birds_model_v4'))
+birdid_model = load_model(os.path.join(os.getcwd(), 'birdnet', 'birdnetv4_VGG16'))
 
 app.config['SECRET_KEY'] = 'bird_secret'
 app.config['SESSION_TYPE'] = 'sqlalchemy'
@@ -28,4 +28,10 @@ app_session = Session(app)
 bcrypt = Bcrypt(app)
 
 # DO NOT move this import to top
-from birdnet import routes 
+from birdnet.forum.routes import forum
+from birdnet.users.routes import users
+from birdnet.main.routes import main
+
+app.register_blueprint(forum)
+app.register_blueprint(users)
+app.register_blueprint(main)

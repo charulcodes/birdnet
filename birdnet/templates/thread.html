@@ -103,7 +103,11 @@
                     <img class="image" src="{{ '\\thread\\' + thread.image_path }}"> 
                 </figure>
                 {% endif %}
-                <p class="mx-4 my-4"> {{ thread.caption }} </p>
+                <p class="mx-4 my-4"> 
+                    {% for line in thread.caption.split('\n') %}
+                        {{ line }}<br>
+                    {% endfor %}
+                </p>
             </div>
         </div>
         <footer class="card-footer">
@@ -303,7 +307,11 @@
                     <img class="image" src="{{ '\\reply\\' + reply.image_path }}"> 
                 </figure>
             {% endif %}
-            <p class="mt-3">{{ reply.caption }}</p>
+            <p class="mt-3">
+                {% for line in reply.caption.split('\n') %}
+                    {{ line }} <br>
+                {% endfor %}
+            </p>
         </div>
     </div>
 

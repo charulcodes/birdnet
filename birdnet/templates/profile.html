@@ -70,7 +70,9 @@
                 {% if user.bio == None %}
                     <i>No bio entered yet</i>
                 {% else %}
-                    {{ user.bio }}
+                    {% for line in user.bio.split('\n') %}
+                        {{ line }}<br>
+                    {% endfor %}
                 {% endif %}
             </p>
         </div>
@@ -127,7 +129,11 @@
                  </div>
                  {% endif %}
                  <div class="media-content">
-                     <p class=""> {{ thread.caption }} </p>    
+                     <p class="">
+                        {% for line in thread.caption.split('\n') %}
+                            {{ line }} <br>
+                        {% endfor %}
+                     </p>    
                  </div>
              </div>
              <footer class="card-footer">

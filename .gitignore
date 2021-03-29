@@ -1,4 +1,3 @@
-
 # Created by https://www.toptal.com/developers/gitignore/api/flask,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=flask,python
 
@@ -7,6 +6,9 @@
 /birdnet/static/reply/
 /birdnet/static/thread/
 /birdnet/static/profile_photos/
+/birdnet/birdnetv4_VGG16/
+/birdnet/12_birds_model_v4/
+/birdnet/birdid_model_v2/
 
 ### Flask ###
 instance/*
