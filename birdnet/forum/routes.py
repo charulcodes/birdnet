@@ -33,7 +33,6 @@ def forum_main():
             db.session.add(thread)
             db.session.commit()
             new_threads = Thread.query.order_by(Thread.creation_date.desc()).limit(5).all()
-            # return render_template('forum/forum.html', title='Forum', status="successful", new_threads = new_threads)
             flash("Thread posted successfully.")
             return redirect(url_for('forum.forum_main'))
         else:
@@ -69,7 +68,6 @@ def thread(thread_id):
                 db.session.add(new_reply)
                 db.session.commit()
                 replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
-                # return render_template('forum/thread.html', thread = thread, replies = replies, status = 'reply-creation-successful')\
                 flash("Reply posted successfully")
                 return redirect(url_for('forum.thread', thread_id=thread.thread_id))
             else:

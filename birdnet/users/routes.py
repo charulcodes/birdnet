@@ -32,7 +32,6 @@ def register():
                             email = email, username = username, password = hashed_password)
             db.session.add(new_user)
             db.session.commit()
-            # return render_template('users/register.html', title='Register', registration = "successful")
             flash("successful")
             return redirect(url_for('users.register'))
         else:
@@ -107,7 +106,6 @@ def profile(username_param):
                 session['username'] = current_user.username
                 session['profile-photo'] = current_user.profile_photo_path
                 session['is-admin'] = current_user.is_admin
-                # return render_template('users/profile.html', title='Profile', user = current_user, updation = "successful", recent_threads = threads)
                 flash("Profile details updated successfully")
                 return redirect(url_for('users.profile', username_param = current_user.username))
             else:
@@ -139,7 +137,6 @@ def password_reset():
                     user.password = hashed_password
                     db.session.add(user)
                     db.session.commit()
-                    # return render_template('users/password_reset.html', title='Reset Password', status="successful")
                     flash("Password reset successfully")
                     return redirect(url_for('users.password_reset'))
                 else:
@@ -167,7 +164,6 @@ def delete_account():
                     db.session.delete(user)
                     db.session.commit()
                     session.clear()
-                    # return render_template('users/delete_account.html', deletion=True)
                     flash("Deletion successful")
                     return redirect(url_for('users.account_deleted'))
                 else:
@@ -198,7 +194,6 @@ def superadmin_panel():
                 db.session.add(newAdminUser)
                 db.session.commit()
                 admin_users = User.query.filter_by(is_admin = True).all()
-                # return render_template("users/superadmin_panel.html", status="user-made-admin", new_admin_user = NewAdminUser, admin_users = admin_users)
                 flash("User \"" + newAdminUser.username + "\" has been made admin")
                 return redirect(url_for('users.superadmin_panel'))
             else:
@@ -212,7 +207,6 @@ def superadmin_panel():
                 db.session.add(revokeAdminUser)
                 db.session.commit()
                 admin_users = User.query.filter_by(is_admin = True).all()
-                # return render_template("users/superadmin_panel.html", status="admin-rights-revoked", revoke_admin_user = RevokeAdminUser, admin_users = admin_users)
                 flash("Admin rights revoked for user \""+ revokeAdminUser.username + "\"")
                 return redirect(url_for('users.superadmin_panel'))
             else:

@@ -15,7 +15,6 @@ from birdnet import app, bcrypt, birdid_model
 from birdnet.main.validations import validate_description_for_bird_details
 from birdnet.main.utils import save_bird_photo, preprocess_image, process_predictions
 
-
 main = Blueprint('main', __name__)
 
 # ------------------------------------ HOME & ABOUT PAGES ------------------------------------
@@ -98,7 +97,6 @@ def edit_bird(bird_id):
 
                     db.session.add(bird_details)
                     db.session.commit()
-                    # return render_template('main/edit_bd.html', status="successful", errors= errors, bird_info = bird_details)
                     flash("Data updated successfully")
                     return redirect(url_for('main.edit_bird', bird_id = bird.bird_id))
                 else:
@@ -118,7 +116,6 @@ def delete_bird(bird_id):
         if request.method == 'POST':
             db.session.delete(bird_details)
             db.session.commit()
-            # return render_template('main/delete_bd.html', status="successful")
             flash("Bird entry for \"" + bird.bird_name +  "\" deleted successfully")
             return redirect(url_for('main.bird_details_panel'))
 
@@ -149,7 +146,6 @@ def bird_details_panel():
                 bird_details = BirdDetails(bird_name= name, scientific_name=scientific_name, description = description, image_path=filename)
                 db.session.add(bird_details)
                 db.session.commit()
-                # return render_template('main/panel.html', title='Bird-details', status="successful")
                 flash("Data saved successfully")
                 return redirect(url_for('main.bird_details_panel'))
             else:
