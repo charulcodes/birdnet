@@ -1,5 +1,5 @@
 from flask import Blueprint
-from flask import render_template, session, request, redirect, url_for, abort
+from flask import render_template, session, request, redirect, url_for, flash, abort
 from datetime import datetime
 from sqlalchemy import or_, func
 from PIL import Image
@@ -33,7 +33,9 @@ def forum_main():
             db.session.add(thread)
             db.session.commit()
             new_threads = Thread.query.order_by(Thread.creation_date.desc()).limit(5).all()
-            return render_template('forum/forum.html', title='Forum', status="successful", new_threads = new_threads)
+            # return render_template('forum/forum.html', title='Forum', status="successful", new_threads = new_threads)
+            flash("Thread posted successfully.")
+            return redirect(url_for('forum.forum_main'))
         else:
             return render_template('forum/forum.html', title='Forum', status="unsuccessful", errors= errors, new_threads = new_threads, popular_threads=popular_threads)
     elif request.method == 'GET':
@@ -67,7 +69,9 @@ def thread(thread_id):
                 db.session.add(new_reply)
                 db.session.commit()
                 replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
-                return render_template('forum/thread.html', thread = thread, replies = replies, status = 'reply-creation-successful')
+                # return render_template('forum/thread.html', thread = thread, replies = replies, status = 'reply-creation-successful')\
+                flash("Reply posted successfully")
+                return redirect(url_for('forum.thread', thread_id=thread.thread_id))
             else:
                 errors['reply-creation'] = True
                 return render_template('forum/thread.html', thread = thread, replies = replies, errors = errors, status = 'reply-creation-failed')
@@ -90,7 +94,9 @@ def thread(thread_id):
                 db.session.add(thread)
                 db.session.commit()
                 replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
-                return render_template('forum/thread.html', thread = thread, replies = replies, status = 'thread-updation-successful')
+                # return render_template('forum/thread.html', thread = thread, replies = replies, status = 'thread-updation-successful')
+                flash("Thread edited successfully")
+                return redirect(url_for('forum.thread', thread_id=thread.thread_id))
             else:
                 errors['thread-id'] = thread_id
                 return render_template('forum/thread.html', thread = thread, replies = replies, errors = errors, status = 'thread-updation-failed')
@@ -113,7 +119,9 @@ def thread(thread_id):
                 db.session.add(reply)
                 db.session.commit()
                 replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
-                return render_template('forum/thread.html', thread = thread, replies = replies, status = 'reply-updation-successful')
+                # return render_template('forum/thread.html', thread = thread, replies = replies, status = 'reply-updation-successful')
+                flash("Reply edited successfully")
+                return redirect(url_for('forum.thread', thread_id=thread.thread_id))
             else:
                 errors['reply-id'] = reply_id
                 return render_template('forum/thread.html', thread = thread, replies = replies, errors = errors, status = 'reply-updation-failed')
@@ -125,7 +133,9 @@ def thread(thread_id):
             if thread.username == username:
                 db.session.delete(thread)
                 db.session.commit()
-                return render_template('forum/thread.html', thread = thread, replies = replies, status = 'thread-deletion-successful')
+                #return render_template('forum/thread.html', thread = thread, replies = replies, status = 'thread-deletion-successful')
+                flash("Thread \""+ thread.title +"\" deleted successfully")
+                return redirect(url_for('forum.forum_main'))
             else:
                 return render_template('forum/thread.html', thread = thread, replies = replies, status = 'thread-deletion-failed')
         elif request.form['form-type'] == 'delete-reply':
@@ -138,7 +148,9 @@ def thread(thread_id):
                 db.session.delete(reply)
                 db.session.commit()
                 replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
-                return render_template('forum/thread.html', thread = thread, replies = replies, status = 'reply-deletion-successful')
+                # return render_template('forum/thread.html', thread = thread, replies = replies, status = 'reply-deletion-successful')
+                flash("Reply deleted successfully")
+                return redirect(url_for('forum.thread', thread_id=thread.thread_id))
             else:
                 return render_template('forum/thread.html', thread = thread, replies = replies, status = 'reply-deletion-failed')
     elif request.method == 'GET':

@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="my-3 mx-3">
-{% if status == "successful" %}
-    <div class="notification is-success">
-        Bird entry deleted successfully 
-    </div>
-{% endif %}
-</div>
+<section class="column m-5 is-flex is-flex-direction-column is-justify-content-center">   
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+            {% for message in messages %}
+            <span class="notification is-success my-4">{{ message }}</span>
+            {% endfor %}
+      {% endif %}
+    {% endwith %}
+</section>
 
 <br>
 

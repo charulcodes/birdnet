@@ -95,13 +95,14 @@ def process_predictions(predictions):
     for n in range(0,40):
         if round(p[n], 5) > 0:
             predicted_index = n
-            a = round((p[n]*100), 3)
+            a = round((p[n]*100), 2)
             processed_dict[a] = (class_dict[predicted_index]).capitalize()
 
     for key, value in processed_dict.items():
         processed_list.append([key, value])
 
     processed_list.sort(reverse = True)
+    processed_list = processed_list[0:5]
 
     return processed_list
     

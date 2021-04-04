@@ -1,17 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="my-3 mx-3">
-{% if status == "successful" %}
-    <div class="notification is-success">
-        Data Updated successfully! 
-    </div>
-{% elif status == "unsuccessful" %}
-    <div class="notification is-danger">
-        Error occured. Please try again.
-    </div>
+<section class="column m-5 is-flex is-flex-direction-column is-justify-content-center">   
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+            {% for message in messages %}
+            <span class="notification is-success my-4">{{ message }}</span>
+            {% endfor %}
+      {% endif %}
+    {% endwith %}
+{% if status == "unsuccessful" %}
+    <span class="notification is-danger"> Error occured. Please try again. </span>
 {% endif %}
-</div>
+</section>
 
 <div class="is-flex is-flex-wrap-wrap">
 <div class="columns my-3 mx-3 is-justify-content-center">

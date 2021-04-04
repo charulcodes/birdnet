@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-{% if deletion == True %}
-  <h1 class="heading-font is-size-3 has-text-black mx-2 mb-3 has-text-centered">We're sorry to see you go :(</h1>
-  <p>Your account has been deleted.</p>
+
+{% if deletion %}
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+          {% for message in messages %}
+          <h1 class="heading-font is-size-3 has-text-black mx-2 mb-3 has-text-centered">We're sorry to see you go :(</h1>
+          <p>Your account has been deleted.</p>
+          {% endfor %}
+          {% endif %}
+  {% endwith %}
 {% else %}
 <div id="container">
 <div class="is-flex is-flex-direction-column is-align-items-center is-justify-content-center">  

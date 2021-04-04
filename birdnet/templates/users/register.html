@@ -25,11 +25,19 @@
                 <h2 class="heading-font is-size-3 has-text-black mx-2">BirdNet</h2>
             </a>
 
-            {% if registration == "successful" %}
-            <div class="notification is-success">
-                You have successfully registered! You can <a href="/login">Login here</a>
-            </div>
-            {% elif registration == "unsuccessful" %}
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                    {% if message == "successful" %}
+                        <div class="notification is-success">
+                            You have successfully registered! You can <a href="/login">Login here</a>
+                        </div>
+                    {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% if registration == "unsuccessful" %}
             <div class="notification is-danger">
                 The registration was unsuccessful. Please try again.
             </div>

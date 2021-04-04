@@ -36,19 +36,20 @@
 
         <a class="body-font has-text-centered mb-4" href="/">Return back to home page</a>
 
-        {% if status == "user-made-admin" %}
-            <span class="notification is-success">
-                User <b>{{ new_admin_user.username  }}</b> is now an admin
-            </span>
-        {% elif login == "user-does-not-exist" %}
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+                {% for message in messages %}
+                <span class="notification is-success my-4">{{ message }}</span>
+                {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        {% if status == "user-does-not-exist" %}
             <span class="notification is-danger">
                 The user <b>{{ new_admin_user }}</b> does not exist
             </span>
-        {% elif status == "admin-rights-revoked" %}
-            <span class="notification is-success">
-                User <b>{{ revoke_admin_user.username  }}</b> is no longer an admin
-            </span>
-        {% elif login == "user-to-be-revoked-does-not-exist" %}
+        {% elif status == "user-to-be-revoked-does-not-exist" %}
             <span class="notification is-danger">
                 The user <b>{{ revoke_admin_user }}</b> does not exist
             </span>

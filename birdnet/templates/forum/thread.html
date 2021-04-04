@@ -16,41 +16,29 @@
 <div class="column is-two-thirds m-3">  
 
 <div id="error-div" class="is-flex m-3 p-2 is-align-items-center is-justify-content-center">
-    {% if status == "reply-creation-successful" %}
-        <span class="notification is-success">
-            Reply posted
-        </span>
-    {% elif status == "reply-creation-failed" %}
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+            {% for message in messages %}
+            <span class="notification is-success my-4">{{ message }}</span>
+            {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if status == "reply-creation-failed" %}
         <span class="notification is-danger">
             Reply couldn't be posted. Please try again.
-        </span>
-    {% elif status == "thread-updation-successful" %}
-        <span class="notification is-success">
-            Thread edited successfully.
         </span>
     {% elif status == "thread-updation-failed" %}
         <span class="notification is-danger">
             Thread couldn't be edited. Please try again.
         </span>
-    {% elif status == "reply-updation-successful" %}
-        <span class="notification is-success">
-            Reply edited successfully.
-        </span>
     {% elif status == "reply-updation-failed" %}
         <span class="notification is-danger">
             Reply couldn't be edited. Please try again.
         </span>
-        {% elif status == "thread-deletion-successful" %}
-        <span class="notification is-success">
-            Thread deleted successfully.
-        </span>
     {% elif status == "thread-deletion-failed" %}
         <span class="notification is-danger">
             Thread couldn't be deleted. Please try again.
-        </span>
-    {% elif status == "reply-deletion-successful" %}
-        <span class="notification is-success">
-            Reply deleted successfully.
         </span>
     {% elif status == "reply-deletion-failed" %}
         <span class="notification is-danger">

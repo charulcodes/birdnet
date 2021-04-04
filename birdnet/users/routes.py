@@ -1,5 +1,5 @@
 from flask import Blueprint
-from flask import render_template, session, request, redirect, url_for, abort
+from flask import render_template, session, request, redirect, url_for, flash, abort
 from datetime import datetime
 from PIL import Image
 import os 
@@ -32,7 +32,9 @@ def register():
                             email = email, username = username, password = hashed_password)
             db.session.add(new_user)
             db.session.commit()
-            return render_template('users/register.html', title='Register', registration = "successful")
+            # return render_template('users/register.html', title='Register', registration = "successful")
+            flash("successful")
+            return redirect(url_for('users.register'))
         else:
             return render_template('users/register.html', title='Register', errors = errors)
     elif request.method == "GET":
@@ -105,7 +107,9 @@ def profile(username_param):
                 session['username'] = current_user.username
                 session['profile-photo'] = current_user.profile_photo_path
                 session['is-admin'] = current_user.is_admin
-                return render_template('users/profile.html', title='Profile', user = current_user, updation = "successful", recent_threads = threads)
+                # return render_template('users/profile.html', title='Profile', user = current_user, updation = "successful", recent_threads = threads)
+                flash("Profile details updated successfully")
+                return redirect(url_for('users.profile', username_param = current_user.username))
             else:
                 return render_template('users/profile.html', title='Profile', user = current_user, errors = errors, recent_threads = threads)         
         elif request.method == "GET":
@@ -135,7 +139,9 @@ def password_reset():
                     user.password = hashed_password
                     db.session.add(user)
                     db.session.commit()
-                    return render_template('users/password_reset.html', title='Reset Password', status="successful")
+                    # return render_template('users/password_reset.html', title='Reset Password', status="successful")
+                    flash("Password reset successfully")
+                    return redirect(url_for('users.password_reset'))
                 else:
                     return render_template('users/password_reset.html', title='Reset Password', status="pwd_error_message")
             else:
@@ -161,7 +167,9 @@ def delete_account():
                     db.session.delete(user)
                     db.session.commit()
                     session.clear()
-                    return render_template('users/delete_account.html', deletion=True)
+                    # return render_template('users/delete_account.html', deletion=True)
+                    flash("Deletion successful")
+                    return redirect(url_for('users.account_deleted'))
                 else:
                     return render_template('users/delete_account.html', errors=True)  
             else:
@@ -172,6 +180,10 @@ def delete_account():
         else:
             abort(404)
 
+@users.route("/account_deleted/")
+def account_deleted():
+    return render_template('users/account_deleted.html')
+
 @users.route("/superadmin_panel/", methods=['GET', 'POST'])
 def superadmin_panel():
     admin_users = User.query.filter_by(is_admin = True).all()
@@ -180,25 +192,29 @@ def superadmin_panel():
         if request.form["type"] == "grant-rights":
             new_admin_username = request.form["new-admin"]
 
-            NewAdminUser = User.query.filter_by(username = new_admin_username).first()
-            if NewAdminUser != None:
-                NewAdminUser.is_admin = True
-                db.session.add(NewAdminUser)
+            newAdminUser = User.query.filter_by(username = new_admin_username).first()
+            if newAdminUser != None:
+                newAdminUser.is_admin = True
+                db.session.add(newAdminUser)
                 db.session.commit()
                 admin_users = User.query.filter_by(is_admin = True).all()
-                return render_template("users/superadmin_panel.html", status="user-made-admin", new_admin_user = NewAdminUser, admin_users = admin_users)
+                # return render_template("users/superadmin_panel.html", status="user-made-admin", new_admin_user = NewAdminUser, admin_users = admin_users)
+                flash("User \"" + newAdminUser.username + "\" has been made admin")
+                return redirect(url_for('users.superadmin_panel'))
             else:
                 return render_template("users/superadmin_panel.html", status="user-does-not-exist", new_admin_user = new_admin_username, admin_users = admin_users)
 
         elif request.form["type"] == "revoke-rights":
             revoke_admin_username = request.form["revoke-admin-rights"]
-            RevokeAdminUser = User.query.filter_by(username = revoke_admin_username).first()
-            if RevokeAdminUser != None:
-                RevokeAdminUser.is_admin = False
-                db.session.add(RevokeAdminUser)
+            revokeAdminUser = User.query.filter_by(username = revoke_admin_username).first()
+            if revokeAdminUser != None:
+                revokeAdminUser.is_admin = False
+                db.session.add(revokeAdminUser)
                 db.session.commit()
                 admin_users = User.query.filter_by(is_admin = True).all()
-                return render_template("users/superadmin_panel.html", status="admin-rights-revoked", revoke_admin_user = RevokeAdminUser, admin_users = admin_users)
+                # return render_template("users/superadmin_panel.html", status="admin-rights-revoked", revoke_admin_user = RevokeAdminUser, admin_users = admin_users)
+                flash("Admin rights revoked for user \""+ revokeAdminUser.username + "\"")
+                return redirect(url_for('users.superadmin_panel'))
             else:
                 return render_template("users/superadmin_panel.html", status="user-to-be-revoked-does-not-exist", revoke_admin_user = revoke_admin_username, admin_users = admin_users)
     

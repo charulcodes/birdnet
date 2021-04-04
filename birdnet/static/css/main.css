@@ -14,6 +14,20 @@
     letter-spacing: 3px;
 }
 
+.gradient-hero {
+    background: linear-gradient(50deg, hsl(286, 80%, 20%, 0.94), hsl(190, 90%, 32%, 0.9)), url("/assets/cubes.png");
+    background-repeat: repeat;
+}
+
+.gradient-footer {
+    background: linear-gradient(50deg, #470a5a, #088199);
+}
+
+.transparent-btn {
+    background: transparent;
+    border: 0px;
+}
+
 /* BACKGROUND COLORS */
 .yellow-bg { background: #E0BC2D; }
 .dark-blue-bg { background: #167F94; }
@@ -32,12 +46,12 @@
 /* SHADOWS */
 .bottom-shadow-1 {
     box-shadow: 0px 4px 4px 1px rgba(0, 0, 0, 0.3);
-    border-radius: 0px 0px 15px 15px;
+    /* border-radius: 0px 0px 15px 15px; */
 }
 
 .bottom-shadow-2 {
     box-shadow: 0px 4px 4px 1px rgba(0, 0, 0, 0.3);
-    border-radius: 0px 0px 30px 30px;
+    /* border-radius: 0px 0px 30px 30px; */
 }
 
 .inset-shadow {
@@ -57,7 +71,6 @@
 .footer-shadow {
     box-shadow: inset 10px 10px 10px 5px rgba(0, 0, 0, 0.25);
     border-radius: 25px 25px 0px 0px;
-    background: #167F94;
 }
 
 /* ROUNDED-CORNERS */
@@ -149,8 +162,7 @@ body {  font-family: Roboto;    }
     width: 35vw;
 }
 
-.bird-detail-card
-{
+.bird-detail-card {
     width: 47vw;
 }
 
