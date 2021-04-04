@@ -3,14 +3,14 @@
 <main class="columns m-4">
     <section class="column is-half p-3">
         <div class="card is-flex is-flex-direction-column p-5 round-1">
-            <h1 class="heading-font is-size-3 has-text-centered mt-2">Photo Bird Identfication</h1>
+            <h1 class="heading-font is-size-3 has-text-centered mt-2">Photo Bird Identification</h1>
 
             <form class="mt-3" action="?" method="POST" enctype="multipart/form-data">
                 <label class="label">Upload image:</label>
 
                 <div id="bird-image-upload" class="file my-3">
                     <label class="file-label">
-                        <input class="file-input mb-5 body-font" type="file" name="bird-image" accept="image/png, image/jpeg, image/jpg">
+                        <input class="file-input mb-5 body-font" type="file" name="bird-image" accept="image/png, image/jpeg, image/jpg" required>
                         <span class="file-cta">
                             <span class="file-label heading-font"> 
                                 <img class="image is-24x24 mr-2" src="/assets/forum_add_images.png">
@@ -27,12 +27,15 @@
 
                 <i><p>Image Preview:</p></i>
                 <figure class="image mx-6 mt-4" style="width: 350px;">
-                    {% if is_image_posted  %}
-                    <img id="image-upload-preview" src="data:image/jpeg;base64,{{ imgString }}">
-                    {% else %}
                     <img id="image-upload-preview" class="round-1" src="">
-                    {% endif %}
                 </figure>
+
+                {% if is_image_posted  %}
+                <i><p class="mt-3">Submitted image:</p></i>
+                <figure class="image mx-6 mt-4" style="width: 350px;">
+                    <img src="data:image/jpeg;base64,{{ imgString }}">
+                </figure>
+                {% endif %}
             </form>
 
         </div>
@@ -48,14 +51,16 @@
             <h3 class="ml-5 is-size-5">Probable Species:</h3>
 
             {% if predictions %}
-            {% for p in predictions %}
-            <div class="ml-5 my-5">
-                <p class="heading-font has-text-black is-size-4">
-                    {{ p[0] }}% {{ p[1] }}
-                </p>
-                <!-- <p class="is-size-5">Acridotheres tristis</p> -->
-            </div>
-            {% endfor %}
+                {% for p in predictions %}
+                <div class="ml-5 my-5">
+                    <p class="heading-font has-text-black is-size-4">
+                        {{ p[0] }}% {{ p[1] }}
+                    </p>
+                    <!-- <p class="is-size-5">Acridotheres tristis</p> -->
+                </div>
+                {% endfor %}
+            {% else %}
+                <i><p class="p-6 my-4">Upload an image of a bird to find out which species it belongs to</p></i>
             {% endif %}
   
         </div>

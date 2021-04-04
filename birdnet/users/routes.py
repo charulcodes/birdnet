@@ -32,13 +32,13 @@ def register():
                             email = email, username = username, password = hashed_password)
             db.session.add(new_user)
             db.session.commit()
-            return render_template('register.html', title='Register', registration = "successful")
+            return render_template('users/register.html', title='Register', registration = "successful")
         else:
-            return render_template('register.html', title='Register', errors = errors)
+            return render_template('users/register.html', title='Register', errors = errors)
     elif request.method == "GET":
         if "username" in session:
             return redirect(url_for('users.profile'))
-        return render_template('register.html', title='Register')
+        return render_template('users/register.html', title='Register')
 
 # Login and Register pages 
 @users.route("/login/", methods=['GET', 'POST'])
@@ -54,13 +54,13 @@ def login():
             session['is-admin'] = user.is_admin
             return redirect(url_for('users.profile', username_param = username))
         elif user and password != user.password:
-            return render_template('login.html', title='Login', login="incorrect_password")
+            return render_template('users/login.html', title='Login', login="incorrect_password")
         else:
-            return render_template('login.html', title='Login', login="unsuccessful")
+            return render_template('users/login.html', title='Login', login="unsuccessful")
     elif request.method == "GET":
         if "username" in session:
             return redirect(url_for('users.profile', username_param = session['username']))
-        return render_template('login.html', title='Login')
+        return render_template('users/login.html', title='Login')
 
 # Logout Page 
 @users.route("/logout/")
@@ -105,17 +105,17 @@ def profile(username_param):
                 session['username'] = current_user.username
                 session['profile-photo'] = current_user.profile_photo_path
                 session['is-admin'] = current_user.is_admin
-                return render_template('profile.html', title='Profile', user = current_user, updation = "successful", recent_threads = threads)
+                return render_template('users/profile.html', title='Profile', user = current_user, updation = "successful", recent_threads = threads)
             else:
-                return render_template('profile.html', title='Profile', user = current_user, errors = errors, recent_threads = threads)         
+                return render_template('users/profile.html', title='Profile', user = current_user, errors = errors, recent_threads = threads)         
         elif request.method == "GET":
             username = session["username"]
             current_user = user
-            return render_template('profile.html', user = current_user, recent_threads = threads)
+            return render_template('users/profile.html', user = current_user, recent_threads = threads)
     else:
         if request.method == 'GET':
             requested_user = user
-            return render_template('profile.html', user= requested_user, recent_threads = threads)
+            return render_template('users/profile.html', user= requested_user, recent_threads = threads)
         elif request.method == 'POST':
             abort(403)
 
@@ -135,16 +135,16 @@ def password_reset():
                     user.password = hashed_password
                     db.session.add(user)
                     db.session.commit()
-                    return render_template('password_reset.html', title='Reset Password', status="successful")
+                    return render_template('users/password_reset.html', title='Reset Password', status="successful")
                 else:
-                    return render_template('password_reset.html', title='Reset Password', status="pwd_error_message")
+                    return render_template('users/password_reset.html', title='Reset Password', status="pwd_error_message")
             else:
-                return render_template('password_reset.html', title='Reset Password', status="passwords_dont_match")
+                return render_template('users/password_reset.html', title='Reset Password', status="passwords_dont_match")
         else:
-            return render_template('password_reset.html', title='Reset Password', status="incorrect_password")
+            return render_template('users/password_reset.html', title='Reset Password', status="incorrect_password")
     elif request.method == 'GET':
         if "username" in session:
-            return render_template('password_reset.html')
+            return render_template('users/password_reset.html')
         else:
             abort(404)
 
@@ -161,14 +161,14 @@ def delete_account():
                     db.session.delete(user)
                     db.session.commit()
                     session.clear()
-                    return render_template('delete_account.html', deletion=True)
+                    return render_template('users/delete_account.html', deletion=True)
                 else:
-                    return render_template('delete_account.html', errors=True)  
+                    return render_template('users/delete_account.html', errors=True)  
             else:
-                return render_template('delete_account.html', errors=True)   
+                return render_template('users/delete_account.html', errors=True)   
     elif request.method == 'GET':
         if "username" in session:
-            return render_template('delete_account.html') 
+            return render_template('users/delete_account.html') 
         else:
             abort(404)
 
@@ -186,9 +186,9 @@ def superadmin_panel():
                 db.session.add(NewAdminUser)
                 db.session.commit()
                 admin_users = User.query.filter_by(is_admin = True).all()
-                return render_template("superadmin_panel.html", status="user-made-admin", new_admin_user = NewAdminUser, admin_users = admin_users)
+                return render_template("users/superadmin_panel.html", status="user-made-admin", new_admin_user = NewAdminUser, admin_users = admin_users)
             else:
-                return render_template("superadmin_panel.html", status="user-does-not-exist", new_admin_user = new_admin_username, admin_users = admin_users)
+                return render_template("users/superadmin_panel.html", status="user-does-not-exist", new_admin_user = new_admin_username, admin_users = admin_users)
 
         elif request.form["type"] == "revoke-rights":
             revoke_admin_username = request.form["revoke-admin-rights"]
@@ -198,14 +198,14 @@ def superadmin_panel():
                 db.session.add(RevokeAdminUser)
                 db.session.commit()
                 admin_users = User.query.filter_by(is_admin = True).all()
-                return render_template("superadmin_panel.html", status="admin-rights-revoked", revoke_admin_user = RevokeAdminUser, admin_users = admin_users)
+                return render_template("users/superadmin_panel.html", status="admin-rights-revoked", revoke_admin_user = RevokeAdminUser, admin_users = admin_users)
             else:
-                return render_template("superadmin_panel.html", status="user-to-be-revoked-does-not-exist", revoke_admin_user = revoke_admin_username, admin_users = admin_users)
+                return render_template("users/superadmin_panel.html", status="user-to-be-revoked-does-not-exist", revoke_admin_user = revoke_admin_username, admin_users = admin_users)
     
     elif request.method == "GET":
         if "username" in session:
             if session["username"] == "admin" or session["username"] == "superadmin":
-                return render_template("superadmin_panel.html", admin_users = admin_users)
+                return render_template("users/superadmin_panel.html", admin_users = admin_users)
             else:
                 abort(404)
             

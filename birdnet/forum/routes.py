@@ -33,11 +33,11 @@ def forum_main():
             db.session.add(thread)
             db.session.commit()
             new_threads = Thread.query.order_by(Thread.creation_date.desc()).limit(5).all()
-            return render_template('forum.html', title='Forum', status="successful", new_threads = new_threads)
+            return render_template('forum/forum.html', title='Forum', status="successful", new_threads = new_threads)
         else:
-            return render_template('forum.html', title='Forum', status="unsuccessful", errors= errors, new_threads = new_threads, popular_threads=popular_threads)
+            return render_template('forum/forum.html', title='Forum', status="unsuccessful", errors= errors, new_threads = new_threads, popular_threads=popular_threads)
     elif request.method == 'GET':
-        return render_template('forum.html', title='Forum', new_threads = new_threads, popular_threads=popular_threads)
+        return render_template('forum/forum.html', title='Forum', new_threads = new_threads, popular_threads=popular_threads)
 
 # Thread
 @forum.route("/forum/thread/<thread_id>", methods=['GET', 'POST'])
@@ -67,10 +67,10 @@ def thread(thread_id):
                 db.session.add(new_reply)
                 db.session.commit()
                 replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
-                return render_template('thread.html', thread = thread, replies = replies, status = 'reply-creation-successful')
+                return render_template('forum/thread.html', thread = thread, replies = replies, status = 'reply-creation-successful')
             else:
                 errors['reply-creation'] = True
-                return render_template('thread.html', thread = thread, replies = replies, errors = errors, status = 'reply-creation-failed')
+                return render_template('forum/thread.html', thread = thread, replies = replies, errors = errors, status = 'reply-creation-failed')
         elif request.form['form-type'] == 'edit-thread':
             username = session['username']
             thread_title = request.form["thread-title"].strip()
@@ -90,10 +90,10 @@ def thread(thread_id):
                 db.session.add(thread)
                 db.session.commit()
                 replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
-                return render_template('thread.html', thread = thread, replies = replies, status = 'thread-updation-successful')
+                return render_template('forum/thread.html', thread = thread, replies = replies, status = 'thread-updation-successful')
             else:
                 errors['thread-id'] = thread_id
-                return render_template('thread.html', thread = thread, replies = replies, errors = errors, status = 'thread-updation-failed')
+                return render_template('forum/thread.html', thread = thread, replies = replies, errors = errors, status = 'thread-updation-failed')
         elif request.form['form-type'] == 'edit-reply':
             username = session['username']
             reply_caption = request.form["reply-caption"].strip()
@@ -113,10 +113,10 @@ def thread(thread_id):
                 db.session.add(reply)
                 db.session.commit()
                 replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
-                return render_template('thread.html', thread = thread, replies = replies, status = 'reply-updation-successful')
+                return render_template('forum/thread.html', thread = thread, replies = replies, status = 'reply-updation-successful')
             else:
                 errors['reply-id'] = reply_id
-                return render_template('thread.html', thread = thread, replies = replies, errors = errors, status = 'reply-updation-failed')
+                return render_template('forum/thread.html', thread = thread, replies = replies, errors = errors, status = 'reply-updation-failed')
         elif request.form['form-type'] == 'delete-thread':
             username = session['username']
             thread_id = int(request.form["thread-id"])
@@ -125,9 +125,9 @@ def thread(thread_id):
             if thread.username == username:
                 db.session.delete(thread)
                 db.session.commit()
-                return render_template('thread.html', thread = thread, replies = replies, status = 'thread-deletion-successful')
+                return render_template('forum/thread.html', thread = thread, replies = replies, status = 'thread-deletion-successful')
             else:
-                return render_template('thread.html', thread = thread, replies = replies, status = 'thread-deletion-failed')
+                return render_template('forum/thread.html', thread = thread, replies = replies, status = 'thread-deletion-failed')
         elif request.form['form-type'] == 'delete-reply':
             username = session['username']
             reply_id = int(request.form["reply-id"])
@@ -138,17 +138,17 @@ def thread(thread_id):
                 db.session.delete(reply)
                 db.session.commit()
                 replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
-                return render_template('thread.html', thread = thread, replies = replies, status = 'reply-deletion-successful')
+                return render_template('forum/thread.html', thread = thread, replies = replies, status = 'reply-deletion-successful')
             else:
-                return render_template('thread.html', thread = thread, replies = replies, status = 'reply-deletion-failed')
+                return render_template('forum/thread.html', thread = thread, replies = replies, status = 'reply-deletion-failed')
     elif request.method == 'GET':
-        return render_template('thread.html', thread = thread, replies = replies)
+        return render_template('forum/thread.html', thread = thread, replies = replies)
 
 @forum.route("/forum/threads/", methods=['GET'])   
 def all_threads():
     page = request.args.get('page', 1, type=int)
     threads = Thread.query.order_by(Thread.creation_date.desc()).paginate(per_page=5)
-    return render_template('all_threads.html', threads = threads)
+    return render_template('forum/all_threads.html', threads = threads)
 
 # Search for a forum post
 @forum.route("/forum/search/", methods=['GET', 'POST'])
@@ -168,6 +168,6 @@ def thread_search():
                 func.lower(Reply.caption).contains(query)
             )).all()
 
-        return render_template('thread_search.html', thread_results = thread_results, reply_results = reply_results, query=original_query)
+        return render_template('forum/thread_search.html', thread_results = thread_results, reply_results = reply_results, query=original_query)
     elif request.method == "GET":
-        return render_template('thread_search.html')
+        return render_template('forum/thread_search.html')

@@ -22,11 +22,11 @@ main = Blueprint('mmain', __name__)
 @main.route("/")
 def index():
     random_bird = BirdDetails.query.order_by(func.random()).first()
-    return render_template('index.html', bird = random_bird)
+    return render_template('main/index.html', bird = random_bird)
 
 @main.route("/about/")
 def about():
-    return render_template('about.html')
+    return render_template('main/about.html')
 
 # ------------------------------------ TOOLS ------------------------------------
 @main.route("/birdid/", methods=['GET', 'POST'])
@@ -48,9 +48,9 @@ def birdid():
 
         predictions = birdid_model.predict(processed_image).tolist()
         prediction_dict = process_predictions(predictions)
-        return render_template('birdid.html', title='Bird Identification', predictions = prediction_dict, is_image_posted = True, imgString=b64)
+        return render_template('main/birdid.html', title='Bird Identification', predictions = prediction_dict, is_image_posted = True, imgString=b64)
     elif request.method == "GET":
-        return render_template('birdid.html', title='Bird Identification')
+        return render_template('main/birdid.html', title='Bird Identification')
 
 @main.route("/search/", methods=['GET','POST'])
 def search():
@@ -67,9 +67,9 @@ def search():
        else:
            results = None
 
-       return render_template('search.html', bird_data = results)
+       return render_template('main/search.html', bird_data = results)
     elif request.method == 'GET':
-       return render_template('search.html')
+       return render_template('main/search.html')
 
 @main.route("/search/Edit/<bird_id>",methods=['GET','POST'])
 def edit_bird(bird_id):
@@ -98,12 +98,12 @@ def edit_bird(bird_id):
 
                     db.session.add(bird_details)
                     db.session.commit()
-                    return render_template('edit_bd.html', status="successful", errors= errors ,bird_info = bird_details)
+                    return render_template('main/edit_bd.html', status="successful", errors= errors ,bird_info = bird_details)
                 else:
-                    return render_template('edit_bd.html', status="unsuccessful", errors= errors , bird_info = bird_details)
+                    return render_template('main/edit_bd.html', status="unsuccessful", errors= errors , bird_info = bird_details)
 
         elif request.method == 'GET':
-            return render_template("edit_bd.html",bird_info = bird_details)
+            return render_template("main/edit_bd.html",bird_info = bird_details)
     else:
         abort(404)
 
@@ -116,10 +116,10 @@ def delete_bird(bird_id):
         if request.method == 'POST':
             db.session.delete(bird_details)
             db.session.commit()
-            return render_template('delete_bd.html', status="successful")
+            return render_template('main/delete_bd.html', status="successful")
 
         elif request.method == 'GET':
-            return render_template("delete_bd.html")
+            return render_template("main/delete_bd.html")
     else:
         abort(404)
 
@@ -145,16 +145,16 @@ def bird_details_panel():
                 bird_details = BirdDetails(bird_name= name, scientific_name=scientific_name, description = description, image_path=filename)
                 db.session.add(bird_details)
                 db.session.commit()
-                return render_template('panel.html', title='Bird-details', status="successful")
+                return render_template('main/panel.html', title='Bird-details', status="successful")
             else:
-                return render_template('panel.html', title='Bird-details', status="unsuccessful", errors= errors)
+                return render_template('main/panel.html', title='Bird-details', status="unsuccessful", errors= errors)
         
         elif request.method == 'GET':
-            return render_template('panel.html', title='Bird-Details')
+            return render_template('main/panel.html', title='Bird-Details')
     else:
         abort(404)
 
 # ------------------------------------ ERROR PAGES ------------------------------------
 @main.errorhandler(404)
 def page_not_found(error):
-    return render_template('page_not_found.html'), 404
+    return render_template('main/page_not_found.html'), 404
