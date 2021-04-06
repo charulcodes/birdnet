@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost/bi
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-birdid_model = load_model(os.path.join(os.getcwd(), 'birdnet', 'birdnetv4_VGG16'))
+birdid_model = load_model(os.path.join(os.getcwd(), 'birdnet', 'birdnetv6_MobileNet'))
 
 app.config['SECRET_KEY'] = 'bird_secret'
 app.config['SESSION_TYPE'] = 'sqlalchemy'

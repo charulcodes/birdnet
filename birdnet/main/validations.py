@@ -3,7 +3,6 @@ import re
 from datetime import datetime
 
 #-----------BIRD SEARCH---------------------------
-
 def validate_description_for_bird_details(description):
    errors = {}
    if len(description) > 500:

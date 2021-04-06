@@ -7,21 +7,6 @@ import numpy as np
 
 from tensorflow.keras.preprocessing.image import img_to_array
 
-class_dict_old = {
-    0:"ANNAS HUMMINGBIRD",
-    1:"ANTBIRD",
-    2:"BALD EAGLE",
-    3:"BARN OWL",
-    4:"BARN SWALLOW",
-    5:"BELTED KINGFISHER",
-    6:"BLACK SWAN",
-    7:"DOWNY WOODPECKER",
-    8:"EMPEROR PENGUIN",
-    9:"OSTRICH",
-    10:"PEACOCK",
-    11:"TRUMPTER SWAN"
-}
-
 class_dict = {
     0:"ALEXANDRINE PARAKEET",
     1:"ANNAS HUMMINGBIRD",
