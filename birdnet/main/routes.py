@@ -81,6 +81,7 @@ def edit_bird(bird_id):
                 name = b_name.replace(' ','-')
                 b_scientific_name = request.form["scientific-name"].strip().title()
                 scientific_name = b_scientific_name.replace(' ','-')
+                image_credit = request.form["image-credit"]
                 description = request.form["description"]
                 filename = None
 
@@ -93,6 +94,7 @@ def edit_bird(bird_id):
                 if errors == {}:
                     bird_details.bird_name = name
                     bird_details.scientific_name = scientific_name
+                    bird_details.image_credit = image_credit
                     bird_details.description = description
 
                     db.session.add(bird_details)
@@ -130,10 +132,10 @@ def bird_details_panel():
         if request.method == 'POST':
             b_name = request.form["name"].strip().title()
             name = b_name.replace(' ','-')
-
             b_scientific_name = request.form["scientific-name"].strip().title()
             scientific_name = b_scientific_name.replace(' ','-')
 
+            image_credit = request.form["image-credit"]
             description = request.form["description"]
             filename = None
 
@@ -143,7 +145,7 @@ def bird_details_panel():
             errors = validate_description_for_bird_details('description')
 
             if errors == {}:
-                bird_details = BirdDetails(bird_name= name, scientific_name=scientific_name, description = description, image_path=filename)
+                bird_details = BirdDetails(bird_name= name, scientific_name=scientific_name, description = description, image_credit = image_credit, image_path=filename)
                 db.session.add(bird_details)
                 db.session.commit()
                 flash("Data saved successfully")

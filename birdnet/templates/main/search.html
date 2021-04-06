@@ -18,10 +18,10 @@
         </form>
         </div>
         {% else %}
-        <div class="is-flex is-flex-direction-column">
+        <div class="is-flex is-flex-direction-row is-justify-content-center is-align-items-center m-4">
             <h1 class="heading-font is-size-3 has-text-black has-text-centered my-3">No Match Found</h1>
 
-            <figure class="image p-3 m-5">
+            <figure class="image p-5 m-5">
                 <img src="/images/sample_img_2.png">
             </figure>
         </div>
@@ -38,9 +38,10 @@
         <div class="columns is-justify-content-center my-2">
                 <div class="column is-one-third mx-3">
                     <img class='image is-size-6'src="{{'\\birdsearch_collection\\'+ row.image_path}}"/>
+                    <p class="has-text-grey is-size-7 mt-1">Photo by {{ row.image_credit }}</p>
                 </div>
 
-                <div class="column"> 
+                <div class="column mx-4"> 
                     <h5 class="heading-font has-text-black">Name Of the bird </h5>
                     {{row.bird_name}}
 
