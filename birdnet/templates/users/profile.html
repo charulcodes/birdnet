@@ -45,18 +45,20 @@
                 {% endif %}
             </h2>
 
-            <div class="is-flex is-justify-content-center is-align-items-center mb-3">
+            <div class="is-flex is-justify-content-center is-align-items-center mb-5">
                 <img class="image is-32x32" src="/assets/profile_joined.png">
                 <p class="is-size-5 ml-3">Joined {{ user.signup_date.strftime("%B %Y") }}</p>
             </div>
             {% if user.username == session['username'] %}
-            <div class="is-flex is-justify-content-center is-align-items-center mb-3">
+            <div class="is-flex is-justify-content-center is-align-items-center mt-5 mb-3">
                 {% if user.username == "superadmin" or user.username == "admin" %}
+                <img class="image is-32x32" src="/assets/admin_panel_badge.png"> 
                     <a class="has-text-black is-size-5 ml-3" href="/superadmin_panel/">Visit Superadmin Panel</a>
                 {% endif %}
             </div>
             <div class="is-flex is-justify-content-center is-align-items-center mb-3">
                 {% if user.is_admin %}
+                <img class="image is-32x32" src="/assets/bird_panel.png"> 
                     <a class="has-text-black is-size-5 ml-3" href="/bird_details_panel/">Visit Bird Details Panel</a>
                 {% endif %}
             </div>
@@ -90,9 +92,9 @@
         <h2 class="heading-font is-size-3 is-half my-5 ">Recent threads</h2>
         {% endif %}
 
-        {% if not recent_threads %}
-        <div class="is-flex is-flex-direction-column">
-            <i><h1 class="heading-font is-size-3 has-text-black has-text-centered my-3">No recent threads found</h1></i>
+        {% if recent_threads.count() == 0 %}
+        <div class="is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
+            <i><h1 class="heading-font is-size-4 has-text-grey has-text-centered my-3">No recent threads found</h1></i>
             {% if 'username' in session %}
                 <a href="/forum/"> Start a new thread here </a>
             {% endif %}
@@ -102,6 +104,7 @@
         </div>
         {% endif %}
 
+        {{ recent_threads.type }}
         {% for thread in recent_threads %}
         <div class="card p-3 round-1 mb-5">
             <div class="media">

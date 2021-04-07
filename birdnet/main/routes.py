@@ -5,8 +5,6 @@ from sqlalchemy import or_, func
 from PIL import Image
 import os, io, base64
 
-from tensorflow import keras
-from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.mobilenet import preprocess_input
 

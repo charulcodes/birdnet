@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from flask_migrate import Migrate
 
-from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.models import load_model
 import os
 
 app = Flask(__name__, 
@@ -12,14 +12,18 @@ app = Flask(__name__,
         static_folder='static',
         template_folder='templates')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost/birdnet'
+db_username = os.environ.get('PG_DB_USER')
+db_psec = os.environ.get('PG_DB_PSEC')
+bsk = os.environ.get('BIRD_BSK')
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://' + db_username + ':' + db_psec + '@localhost/birdnet'
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 birdid_model = load_model(os.path.join(os.getcwd(), 'birdnet', 'birdnetv6_MobileNet'))
 
-app.config['SECRET_KEY'] = 'bird_secret'
+app.config['SECRET_KEY'] = bsk
 app.config['SESSION_TYPE'] = 'sqlalchemy'
 app.config['SESSION_SQLALCHEMY'] = db
 
