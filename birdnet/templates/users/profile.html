@@ -145,9 +145,9 @@
              </div>
              <footer class="card-footer">
                 {% if 'username' in session %}
-                 <a href="#" class="card-footer-item">Reply</a>
+                 <a href="{{ '/forum/thread/{}'.format(thread.thread_id) }}" class="card-footer-item">Reply</a>
                  {% endif %}
-                 <a href="#" class="card-footer-item">1.2k views</a>
+                 <a href="{{ '/forum/thread/{}'.format(thread.thread_id) }}" class="card-footer-item">1.2k views</a>
              </footer>
          </div>
          {% endfor %}

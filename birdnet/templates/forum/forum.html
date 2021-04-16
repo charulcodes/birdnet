@@ -150,7 +150,7 @@
                 {% if 'username' in session %}
                 <a href="{{ '/forum/thread/{}'.format(thread.thread_id) }}" class="card-footer-item">Reply</a>
                 {% endif %}
-                <a href="#" class="card-footer-item"> {{ thread.view_count }} views</a>
+                <a href="{{ '/forum/thread/{}'.format(thread.thread_id) }}" class="card-footer-item"> {{ thread.view_count }} views</a>
             </footer>
         </div>
     {% endfor %}
