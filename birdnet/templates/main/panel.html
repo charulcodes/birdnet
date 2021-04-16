@@ -22,10 +22,27 @@
         <form class="my-2" action="" method="POST" enctype="multipart/form-data">
                     <label class="label ">Name of the bird:</label>
                     <input class="input input-shadow" type="text" name="name" required/> 
+                    {% if errors %}
+                        {% if errors["name"] %}
+                            <p class="mt-2 mb-4 n has-text-danger"> {{ errors['name'] }} </p>
+                        {% endif %}
+                    {% endif %}  
+
                     <label class="label mt-3">Scientific name :</label>
                     <input class="input input-shadow" type="text" name="scientific-name" required/> 
+                    {% if errors %}
+                        {% if errors["scientific-name"] %}
+                            <p class="mt-2 mb-4 n has-text-danger"> {{ errors['scientific-name'] }} </p>
+                        {% endif %}
+                    {% endif %}  
+
                     <label class="label mt-3">Description:</label>
                     <textarea class="textarea input-shadow" name="description" required></textarea>
+                    {% if errors %}
+                        {% if errors["description"] %}
+                            <p class="mt-2 mb-4 n has-text-danger"> {{ errors['description'] }} </p>
+                        {% endif %}
+                    {% endif %}  
                 
                     <div id="bird-image-upload" class="file my-3">
                         <label class="file-label">
@@ -44,6 +61,11 @@
                     
                     <label class="label mt-3">Image Credit :</label>
                     <input class="input input-shadow" type="text" name="image-credit" required/> 
+                    {% if errors %}
+                        {% if errors["image-credit"] %}
+                            <p class="mt-2 mb-4 n has-text-danger"> {{ errors['image-credit'] }} </p>
+                        {% endif %}
+                    {% endif %}                      
 
                     <i><p>Image Preview:</p></i>
                     <figure style="width: 150px;">

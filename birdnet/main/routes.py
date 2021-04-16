@@ -9,7 +9,7 @@ from tensorflow.keras.applications.mobilenet import preprocess_input
 
 from birdnet.models import User, Thread, Reply, BirdDetails, db
 from birdnet import app, bcrypt, birdid_model
-from birdnet.main.validations import validate_description_for_bird_details
+from birdnet.main.validations import validate_bird_details
 from birdnet.main.utils import save_bird_photo, preprocess_image, process_predictions
 
 main = Blueprint('main', __name__)
@@ -86,7 +86,7 @@ def edit_bird(bird_id):
                     filename = save_bird_photo(request.files['bird-image'])
                     bird_details.image_path = filename 
 
-                errors = validate_description_for_bird_details('description')
+                errors = validate_bird_details(name, scientific_name, description, image_credit)
 
                 if errors == {}:
                     bird_details.bird_name = name
@@ -139,7 +139,7 @@ def bird_details_panel():
             if request.files['bird-image']:
                 filename = save_bird_photo(request.files['bird-image'])
 
-            errors = validate_description_for_bird_details('description')
+            errors = validate_bird_details(name, scientific_name, description, image_credit)
 
             if errors == {}:
                 bird_details = BirdDetails(bird_name= name, scientific_name=scientific_name, description = description, image_credit = image_credit, image_path=filename)

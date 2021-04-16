@@ -128,13 +128,13 @@
                 <div class="is-flex is-flex-direction-column">
                     <input class="input input-shadow mb-2 heading-font" type="text" name="thread-title" value="{{ thread.title }}" placeholder="Add thread title" required/> 
                     {% if errors %}
-                        {% if errors["new-title"] and errors[thread-id] == thread.thread_id %}
+                        {% if errors["new-title"] and errors["thread-id"] == thread.thread_id %}
                             <p class="mt-1 mb-4 n has-text-danger"> {{ errors['new-title'] }} </p>
                         {% endif %}
                     {% endif %}  
                     <textarea class="textarea input-shadow body-font" name="thread-caption" placeholder="Write something here" required>{{ thread.caption }}</textarea>
                     {% if errors %}
-                        {% if errors["new-caption"] and errors[thread-id] == thread.thread_id %}
+                        {% if errors["new-caption"] and errors["thread-id"] == thread.thread_id %}
                             <p class="mt-2 mb-4 n has-text-danger"> {{ errors['new-caption'] }} </p>
                         {% endif %}
                     {% endif %}  
@@ -227,11 +227,9 @@
                 <h2 class="has-text-black is-size-6 ml-1 mb-4">Reply to this thread</h2>
                 <textarea class="textarea input-shadow body-font" name="reply-caption" placeholder="Write something here" required></textarea>
                 {% if errors %}
-                    {% if errors['reply-creation'] == True %}
                         {% if errors["reply-caption"] %}
-                            <p class="mt-2 mb-4 n has-text-danger"> {{ errors['caption'] }} </p>
+                            <p class="mt-2 mb-4 n has-text-danger"> {{ errors['reply-caption'] }} </p>
                         {% endif %}
-                    {% endif %}
                 {% endif %}  
             </div>
             <div class="column is-two-fifths is-flex is-flex-direction-column is-justify-content-flex-end">
@@ -324,7 +322,7 @@
                 <div class="is-flex is-flex-direction-column">
                     <textarea class="textarea input-shadow body-font" name="reply-caption" placeholder="Write something here" required>{{ reply.caption }}</textarea>
                     {% if errors %}
-                        {% if errors["new-caption"] and errors[reply-id] == reply.reply_id %}
+                        {% if errors["new-caption"] and errors["reply-id"] == reply.reply_id %}
                             <p class="mt-2 mb-4 n has-text-danger"> {{ errors['new-caption'] }} </p>
                         {% endif %}
                     {% endif %}  

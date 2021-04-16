@@ -42,11 +42,28 @@
             
             <h2 class="heading-font has-text-black is-align-items-center is-size-3">Update details</h2>
             <label class="label mt-4">Name of the bird:</label>
-            <input class="input input-shadow" type="text" name="name" value= "{{bird_info.bird_name}}" /> 
+            <input class="input input-shadow" type="text" name="name" value= "{{bird_info.bird_name}}" />
+            {% if errors %}
+                {% if errors["name"] %}
+                    <p class="mt-2 mb-4 n has-text-danger"> {{ errors['name'] }} </p>
+                {% endif %}
+            {% endif %}  
+    
             <label class="label mt-4">Scientific name :</label>
             <input class="input input-shadow" type="text" name="scientific-name" value = "{{bird_info.scientific_name}}" />
+            {% if errors %}
+                {% if errors["scientific-name"] %}
+                    <p class="mt-2 mb-4 n has-text-danger"> {{ errors['scientific-name'] }} </p>
+                {% endif %}
+            {% endif %}
+
             <label class="label mt-4">Description:</label>
             <textarea class="textarea input-shadow has-text-black" name="description">{{bird_info.description}}</textarea>
+            {% if errors %}
+                {% if errors["description"] %}
+                    <p class="mt-2 mb-4 n has-text-danger"> {{ errors['description'] }} </p>
+                {% endif %}
+            {% endif %}  
         
             <div id="bird-image-upload" class="file mt-4 mb-5">
                 <label class="file-label">
@@ -64,7 +81,12 @@
             </div> 
 
             <label class="label mt-4">Image credit :</label>
-            <input class="input input-shadow mb-4" type="text" name="scientific-name" value = "{{bird_info.image_credit}}" />
+            <input class="input input-shadow mb-4" type="text" name="image-credit" value = "{{bird_info.image_credit}}" />
+            {% if errors %}
+                {% if errors["image-credit"] %}
+                    <p class="mt-2 mb-4 n has-text-danger"> {{ errors['image-credit'] }} </p>
+                {% endif %}
+            {% endif %}              
 
             <i><p>Image Preview:</p></i>
             <figure style="width: 150px;">

@@ -59,9 +59,9 @@ def thread(thread_id):
                 
             errors = {}
             if reply_caption == '':
-                errors['reply_caption'] = 'Please enter text in the reply.'
+                errors['reply-caption'] = 'Please enter text in the reply.'
             elif len(reply_caption) > 400:
-                errors['reply_caption'] = 'Reply cannot be longer than 400 characters.'
+                errors['reply-caption'] = 'Reply cannot be longer than 400 characters.'
 
             if errors == {}:
                 new_reply = Reply(username = username, caption = reply_caption, image_path = filename, thread_id = thread.thread_id)
@@ -92,7 +92,6 @@ def thread(thread_id):
                 db.session.add(thread)
                 db.session.commit()
                 replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
-                # return render_template('forum/thread.html', thread = thread, replies = replies, status = 'thread-updation-successful')
                 flash("Thread edited successfully")
                 return redirect(url_for('forum.thread', thread_id=thread.thread_id))
             else:
@@ -117,7 +116,6 @@ def thread(thread_id):
                 db.session.add(reply)
                 db.session.commit()
                 replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
-                # return render_template('forum/thread.html', thread = thread, replies = replies, status = 'reply-updation-successful')
                 flash("Reply edited successfully")
                 return redirect(url_for('forum.thread', thread_id=thread.thread_id))
             else:
@@ -131,7 +129,6 @@ def thread(thread_id):
             if thread.username == username:
                 db.session.delete(thread)
                 db.session.commit()
-                #return render_template('forum/thread.html', thread = thread, replies = replies, status = 'thread-deletion-successful')
                 flash("Thread \""+ thread.title +"\" deleted successfully")
                 return redirect(url_for('forum.forum_main'))
             else:
@@ -146,7 +143,6 @@ def thread(thread_id):
                 db.session.delete(reply)
                 db.session.commit()
                 replies = Reply.query.filter_by(thread_id = thread.thread_id).order_by(Reply.creation_date.desc()).all()
-                # return render_template('forum/thread.html', thread = thread, replies = replies, status = 'reply-deletion-successful')
                 flash("Reply deleted successfully")
                 return redirect(url_for('forum.thread', thread_id=thread.thread_id))
             else:
