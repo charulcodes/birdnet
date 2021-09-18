@@ -15,7 +15,7 @@ Bird Identification Feature: \
 ![image](https://user-images.githubusercontent.com/63246596/133880907-3971218b-15a3-405d-9adb-e6cc7fe0fc70.png)
 
 Forum and user profile: \
-![image](https://user-images.githubusercontent.com/63246596/133880937-5d419f2c-ae54-4dfb-a01e-be8767306d40.png)
+![image](https://user-images.githubusercontent.com/63246596/133880937-5d419f2c-ae54-4dfb-a01e-be8767306d40.png) \
 ![image](https://user-images.githubusercontent.com/63246596/133880954-56285d50-38f0-44b6-860e-ca255345d02d.png)
 
 Post: \
